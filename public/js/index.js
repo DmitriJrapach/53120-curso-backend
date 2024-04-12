@@ -96,22 +96,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
     
-    socket.on("messagesLogs", data => {
-    let messages = "";
-
-    // Verificar si data es un array antes de intentar iterar sobre él
-    if (Array.isArray(data)) {
-        data.forEach(chat => {
-            messages += `${chat.user}: ${chat.message} </br>`;
-        });
-    } else {
-        console.error("Data received is not an array:", data);
-    }
-
-    messagesLogs.innerHTML = messages;
-    console.log("mensaje recibido")
-});
+    socket.on("messages", data => {
+        console.log("Mensajes recibidos del servidor:", data);
+        let messages = "";
     
+        // Verificar si data es un array antes de intentar iterar sobre él
+        if (Array.isArray(data)) {
+            data.forEach(chat => {
+                messages += `${chat.user}: ${chat.message} </br>`;
+            });
+        } else {
+            console.error("Data received is not an array:", data);
+        }
+    
+        messagesLogs.innerHTML = messages;
+        console.log("mensaje recibido");
+    });
     // Manejador de eventos para recibir notificaciones de nuevos usuarios en el chat
     socket.on("newUser", data => {
         Swal.fire({

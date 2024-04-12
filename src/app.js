@@ -4,6 +4,7 @@ import handlebars from 'express-handlebars';
 import productRouter from './routes/productRouter.js';
 import cartRouter from './routes/cartRouter.js';
 import viewsRouter from './routes/viewsRouter.js';
+import messageRouter from './routes/messageRouter.js'
 import __dirname from './utils/constantsUtil.js';
 import {Server} from 'socket.io';
 import websocket from './websocket.js';
@@ -54,6 +55,7 @@ app.use(express.static('public'));
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/products', viewsRouter);
+app.use('/chat', messageRouter)
 
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => {

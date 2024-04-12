@@ -1,28 +1,34 @@
-// import { productManagerFS } from "./dao/productManagerFS.js";
-// const ProductService = new productManagerFS('products.json');
 import { productManagerDB } from "./dao/productManagerDB.js";
 import { messageManagerDB } from "./dao/messageManagerDB.js";
 import messageModel from "./dao/models/messageModel.js";
 
 const ProductService = new productManagerDB();
+const messageManager = new messageManagerDB(); // Mover la inicialización aquí
 
 export default (io) => {
     // Manejador de eventos para la conexión de WebSocket
-    io.on("connection", (socket) => {
-           
-        const messageManager = new messageManagerDB();
-        const messages = []; // Mover la declaración aquí
-    
-        console.log("Nuevo cliente conectado: ", socket.id);
+    io.on("connection", async (socket) => {
+        try {
+            // Obtener todos los mensajes al conectarse un nuevo cliente
+            const messages = await messageManager.getAllMessages();
+            console.log("Nuevo cliente conectado: ", socket.id);
+
+            // Emitir los mensajes al cliente conectado
+            socket.emit("messages", messages);
+        } catch (error) {
+            console.error("Error al obtener los mensajes:", error);
+            // Emitir un mensaje de error al cliente
+            socket.emit("statusError", "Error al obtener los mensajes");
+        }
 
         socket.on("message", async (data) => {
             try {
                 // Insertar el mensaje en la base de datos
                 await messageManager.insertMessage(data);
-
+        
                 // Obtener todos los mensajes actualizados
-                const messages = await messageManager.getAllMessages(); // Esto es opcional, depende de si quieres obtener todos los mensajes actualizados después de insertar uno nuevo
-
+                const messages = await messageManager.getAllMessages();
+        
                 // Emitir los mensajes actualizados a todos los clientes
                 io.emit("messages", messages);
             } catch (error) {
@@ -31,11 +37,9 @@ export default (io) => {
                 socket.emit("statusError", "Error al procesar el mensaje");
             }
         });
-
         socket.on("userConnect", data => {
-            // No estoy seguro de qué hacer aquí, pero si necesitas hacer algo
-            // con la información del usuario conectado, puedes hacerlo aquí.
-            // socket.broadcast.emit("newUser", data);
+            // Emitir un mensaje a todos los clientes informando que un usuario se ha conectado
+            io.emit("newUser", data + " se ha conectado al chat");
         });
 
         // Evento para crear un nuevo producto
