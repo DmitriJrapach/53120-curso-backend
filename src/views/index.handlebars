@@ -1,4 +1,4 @@
-<div class="box">
+{{!-- <div class="box">
     <h1>Productos</h1>
     <div class="products-box">
         {{#each products}}
@@ -11,4 +11,35 @@
             </div>
         {{/each}}
     </div>
+</div> --}}
+<div class="box">
+    <h1>Productos</h1>
+    {{#if isValid}}
+        <div class="products-box">
+            {{#each products}}
+               <div class="product-card">
+                <h3>{{this.title}}</h3>
+                <hr>
+                <p>Categoria: {{this.category}}</p>
+                <p>Descripción: {{this.description}}</p>
+                <p>Precio: $ {{this.price}}</p>
+            </div>
+               <br>
+            {{/each}}
+        </div>
+        <hr>
+        <div>
+            {{#if hasPrevPage}}
+                <a href="{{this.prevLink}}"><< Anterior</a>
+            {{/if}}
+        </div>
+        <br>
+        <div>
+            {{#if hasNextPage}}
+                <a href="{{this.nextLink}}">Siguiente >></a>
+            {{/if}}
+        </div>
+    {{else}}
+       <h2>No hay productos para mostrar</h2>
+    {{/if}}
 </div>

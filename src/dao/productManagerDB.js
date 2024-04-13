@@ -1,14 +1,12 @@
 import productModel from "./models/productModel.js";
 
 class productManagerDB {
-  
 
-  async getAllProducts() {
+  async getAllProducts(limit, page, query, sort) {
     try {
-      return await productModel.find().lean();
+      return await productModel.paginate(query, {limit: limit, page: page, lean: true, sort: sort})
     } catch (error) {
-      console.error(error.message);
-      throw new Error ("Error al buscar los productos");
+      console.error(error)
     }
   }
 

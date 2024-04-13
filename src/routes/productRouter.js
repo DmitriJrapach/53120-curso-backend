@@ -1,20 +1,38 @@
 import { Router } from 'express';
-// import { productManagerFS } from '../dao/productManagerFS.js';
 import { productManagerDB } from '../dao/productManagerDB.js';
 import { uploader } from '../utils/multerUtil.js';
 
-const router = Router();
-// const ProductService = new productManagerFS('products.json');
+const router = Router();    
 const ProductService = new productManagerDB();
 
 router.get('/', async (req, res) => {
-    const result = await ProductService.getAllProducts();
-
-    res.send({
+    try {
+      let { limit = 10, page = 1, query = {}, sort = null} = req.query;
+      const result = await ProductService.getAllProducts(limit, page, query, sort);
+      res.send({
         status: 'success',
-        payload: result
-    });
-});
+        payload: result.docs,
+        totalPages: result.totalPages,
+        prevPage: result.prevPage,
+        nextPage: result.nextPage,
+        page: result.page,
+        hasPrevPage: result.hasPrevPage,
+        hasNextPage: result.hasNextPage,
+        prevLink: result.prevPage ? `http://localhost:8080/api/products?page=${result.prevPage}` : null,
+        nextLink: result.nextPage ? `http://localhost:8080/api/products?page=${result.nextPage}` : null
+      })
+    } catch (error) {
+      console.error(error)
+    }
+  })
+// router.get('/', async (req, res) => {
+//     const result = await ProductService.getAllProducts();
+
+//     res.send({
+//         status: 'success',
+//         payload: result
+//     });
+// });
 
 router.get('/:pid', async (req, res) => {
 
