@@ -1,18 +1,25 @@
 
 <div class="box">
     <h1>Productos</h1>
-    <form id="search-form">
+     <form id="search-form-category">
         <label for="category">Categoría:</label>
         <input type="text" id="category" name="category">
-        
+        <button type="submit">Buscar por Categoría</button>
+    </form>
+
+    <form id="search-form-availability">
         <label for="availability">Disponibilidad:</label>
         <select id="availability" name="availability">
             <option value="true">Disponible</option>
             <option value="false">No Disponible</option>
         </select>
-        
-        <button type="submit">Buscar</button>
-    </form>
+        <button type="submit">Buscar por Disponibilidad</button>
+    </form>    
+        <a href="http://localhost:8080/products?sort={%22price%22:1}" class="button">
+          Ordenar por Precio Ascendente    
+        <a href="http://localhost:8080/products?sort={%22price%22:-1}" class="button">
+          Ordenar por Precio Descendente
+        </a>     
     {{#if isValid}}
         <div class="products-box">
             {{#each products}}

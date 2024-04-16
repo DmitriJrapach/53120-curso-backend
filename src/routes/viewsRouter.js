@@ -7,7 +7,7 @@ const ProductService = new productManagerDB();
 router.get('/', async (req, res) => {
   try {
       // Obtener parámetros de búsqueda del query string
-      const { limit = 2, page = 1, category, availability, sort = null } = req.query;
+      const { limit = 4, page = 1, category, availability, sort = null } = req.query;
 
       // Construir el objeto de consulta basado en los parámetros de búsqueda
       let query = {};
@@ -42,16 +42,25 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.get('/realtimeproducts', async (req, res) => {
-    res.render(
-        'realTimeProducts',
-        {
-            title: 'Productos',
-            style: 'index.css',
-            products: await ProductService.getAllProducts()
-        }
-    )
-});
+// router.get('/realtimeproducts', async (req, res) => {
+//     try {
+//         // Obtener parámetros de búsqueda del query string
+//         const { limit = 10, page = 1, category, availability, sort = null } = req.query;
+
+//         // Obtener productos con los parámetros de consulta
+//         const products = await ProductService.getAllProducts(limit, page, { category, availability }, sort);
+        
+//         // Renderizar la vista con los productos
+//         res.render('realTimeProducts', {
+//             title: 'Productos',
+//             style: 'index.css',
+//             products: products.docs // Aquí se utiliza la propiedad docs del resultado
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         // Manejar el error aquí
+//     }
+// });
 
 router.get("/chat", (req, res) => {
     res.render(
