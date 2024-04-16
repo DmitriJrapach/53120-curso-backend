@@ -1,19 +1,18 @@
-{{!-- <div class="box">
-    <h1>Productos</h1>
-    <div class="products-box">
-        {{#each products}}
-            <div class="product-card">
-                <h3>{{this.title}}</h3>
-                <hr>
-                <p>Categoria: {{this.category}}</p>
-                <p>Descripción: {{this.description}}</p>
-                <p>Precio: $ {{this.price}}</p>
-            </div>
-        {{/each}}
-    </div>
-</div> --}}
+
 <div class="box">
     <h1>Productos</h1>
+    <form id="search-form">
+        <label for="category">Categoría:</label>
+        <input type="text" id="category" name="category">
+        
+        <label for="availability">Disponibilidad:</label>
+        <select id="availability" name="availability">
+            <option value="true">Disponible</option>
+            <option value="false">No Disponible</option>
+        </select>
+        
+        <button type="submit">Buscar</button>
+    </form>
     {{#if isValid}}
         <div class="products-box">
             {{#each products}}

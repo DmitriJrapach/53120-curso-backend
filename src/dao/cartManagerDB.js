@@ -1,6 +1,7 @@
 import productModel from "./models/productModel.js";
 import cartModel from "./models/cartModel.js";
 
+
 class cartManagerDB {
 
     async getAllCarts() {
@@ -12,21 +13,16 @@ class cartManagerDB {
         }
     }
 
-    async getProductsFromCartByID(cid) {
+    async getCartById(cid) {
         try {
-            // Busca el carrito en la base de datos por su ID
-            const cart = await cartModel.findOne({ _id: cid });
-
-            // Si se encuentra un carrito con el ID dado, devuelve los productos del carrito
-            if (cart) {
-                return cart.products;
+            const cart = await cartModel.findById(cid).populate('products.product').lean();
+            if (!cart) {
+                console.error('Carrito no encontrado');
+                return;
             }
-
-            // Si no se encuentra ningún carrito con el ID dado, lanza un error
-            throw new Error(`El carrito ${cid} no existe!`);
+            return cart;
         } catch (error) {
-            // Captura cualquier error y lo maneja
-            throw new Error(`Error al obtener productos del carrito: ${error.message}`);
+            console.error(error);
         }
     }
 
@@ -37,6 +33,51 @@ class cartManagerDB {
             return newCart;
         } catch (error) {
             throw new Error('Error al crear el carrito');
+        }
+    }
+    async updateCart(cartId, products) {
+        try {
+            // Verificar si el carrito existe
+            const cart = await cartModel.findById(cartId);
+            if (!cart) {
+                throw new Error(`El carrito ${cartId} no existe`);
+            }
+    
+            // Actualizar productos en el carrito
+            cart.products = products;
+    
+            // Guardar los cambios en la base de datos
+            await cart.save();
+            
+            return cart;
+        } catch (error) {
+            throw new Error(`Error al actualizar el carrito: ${error.message}`);
+        }
+    }
+
+    async updateProductQuantity(cartId, productId, quantity) {
+        try {
+            // Verificar si el carrito existe
+            const cart = await cartModel.findById(cartId);
+            if (!cart) {
+                throw new Error(`El carrito ${cartId} no existe`);
+            }
+    
+            // Verificar si el producto está en el carrito
+            const productIndex = cart.products.findIndex(product => product.product.toString() === productId);
+            if (productIndex === -1) {
+                throw new Error(`El producto ${productId} no está en el carrito ${cartId}`);
+            }
+    
+            // Actualizar la cantidad del producto
+            cart.products[productIndex].quantity = quantity;
+    
+            // Guardar los cambios en la base de datos
+            await cart.save();
+            
+            return cart;
+        } catch (error) {
+            throw new Error(`Error al actualizar la cantidad del producto en el carrito: ${error.message}`);
         }
     }
 

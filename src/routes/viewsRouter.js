@@ -1,14 +1,24 @@
 import { Router } from 'express';
-// import { productManagerFS } from '../dao/productManagerFS.js';
 import { productManagerDB } from '../dao/productManagerDB.js';
 
 const router = Router();
-// const ProductService = new productManagerFS('products.json');
 const ProductService = new productManagerDB();
 
 router.get('/', async (req, res) => {
-    try {
-      let { limit = 2, page = 1, query = {}, sort = null} = req.query;
+  try {
+      // Obtener parámetros de búsqueda del query string
+      const { limit = 2, page = 1, category, availability, sort = null } = req.query;
+
+      // Construir el objeto de consulta basado en los parámetros de búsqueda
+      let query = {};
+      if (category) {
+          query.category = category;
+      }
+      if (availability !== undefined) {
+          query.status = (availability === 'true');
+      }
+      
+      // Obtener los productos que coinciden con la búsqueda
       const result = await ProductService.getAllProducts(limit, page, query, sort);
       const isValid = !(page <= 0 || page > result.totalPages);
       res.render(
@@ -30,18 +40,7 @@ router.get('/', async (req, res) => {
     } catch (error) {
       console.error(error)
     }
-  })
-
-// router.get('/', async (req, res) => {
-//     res.render(
-//         'index',
-//         {
-//             title: 'Productos',
-//             style: 'index.css',
-//             products: await ProductService.getAllProducts()
-//         }
-//     )
-// });
+})
 
 router.get('/realtimeproducts', async (req, res) => {
     res.render(
