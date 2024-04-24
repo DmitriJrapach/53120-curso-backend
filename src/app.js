@@ -1,6 +1,9 @@
 
 import express from 'express';
 import handlebars from 'express-handlebars';
+import session from 'express-session';
+import mongoStore from 'connect-mongo';
+import userRouter from './routes/userRouter.js';
 import productRouter from './routes/productRouter.js';
 import cartRouter from './routes/cartRouter.js';
 import viewsRouter from './routes/viewsRouter.js';
@@ -50,12 +53,33 @@ app.set('view engine', 'handlebars');
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
+//Session Middleware
+app.use(session(
+    {
+        store: mongoStore.create(
+            {
+                mongoUrl: uri,
+                ttl: 3600
+            }
+        ),
+        secret: 'secretPhrase',
+        resave: true,
+        saveUninitialized: true
+    }
+));
 
 //Routers
+app.use('/api/sessions', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
+app.use('/api/chat', messageRouter);
 app.use('/products', viewsRouter);
-app.use('/chat', messageRouter)
+
+// Middleware para redirigir la ruta raíz a la pantalla de login
+app.get('/', (req, res) => {
+    res.redirect('/products/login');
+});
+
 
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => {

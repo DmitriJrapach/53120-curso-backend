@@ -1,46 +1,55 @@
 import { Router } from 'express';
 import { productManagerDB } from '../dao/productManagerDB.js';
-
+import {auth} from '../middleware/auth.js';
 const router = Router();
 const ProductService = new productManagerDB();
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-      // Obtener parámetros de búsqueda del query string
-      const { limit = 4, page = 1, category, availability, sort = null } = req.query;
+    // Obtener los datos del usuario de la sesión
+    const user = req.session.user;
 
-      // Construir el objeto de consulta basado en los parámetros de búsqueda
-      let query = {};
-      if (category) {
-          query.category = category;
-      }
-      if (availability !== undefined) {
-          query.status = (availability === 'true');
-      }
-      
-      // Obtener los productos que coinciden con la búsqueda
-      const result = await ProductService.getAllProducts(limit, page, query, sort);
-      const isValid = !(page <= 0 || page > result.totalPages);
-      res.render(
-        "index",
-        {
-        style: "index.css",
-        status: 'success',
-        products: result.docs,
-        totalPages: result.totalPages,
-        prevPage: result.prevPage,
-        nextPage: result.nextPage,
-        page: result.page,
-        hasPrevPage: result.hasPrevPage,
-        hasNextPage: result.hasNextPage,
-        prevLink: result.prevPage ? `http://localhost:8080/products?page=${result.prevPage}` : null,
-        nextLink: result.nextPage ? `http://localhost:8080/products?page=${result.nextPage}` : null,
-        isValid: isValid 
-      })
-    } catch (error) {
-      console.error(error)
+    // Obtener parámetros de búsqueda del query string
+    const { limit = 4, page = 1, category, availability, sort = null } = req.query;
+
+    // Construir el objeto de consulta basado en los parámetros de búsqueda
+    let query = {};
+    if (category) {
+      query.category = category;
     }
+    if (availability !== undefined) {
+      query.status = availability === "true";
+    }
+
+    // Obtener los productos que coinciden con la búsqueda
+    const result = await ProductService.getAllProducts(limit, page, query, sort);
+    const isValid = !(page <= 0 || page > result.totalPages);
+
+    // Renderizar la página de productos y pasar los datos del usuario a la plantilla
+    res.render("products", {
+      style: "index.css",
+      status: "success",
+      products: result.docs,
+      totalPages: result.totalPages,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
+      page: result.page,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevLink: result.prevPage ? `http://localhost:8080/products?page=${result.prevPage}` : null,
+      nextLink: result.nextPage ? `http://localhost:8080/products?page=${result.nextPage}` : null,
+      isValid: isValid,
+      user: user // Pasar los datos del usuario a la plantilla
+    });
+  } catch (error) {
+    console.error(error);
+  }
 })
+
+router.get("/products", (req, res) => {
+  const user = req.session.user;
+  res.render("products", { user: user });
+});
 
 // router.get('/realtimeproducts', async (req, res) => {
 //     try {
@@ -71,5 +80,42 @@ router.get("/chat", (req, res) => {
         }
     )
 });
+
+router.get("/user", auth, (req, res) => {
+  res.render(
+      'user',
+      {
+          title: 'Coder House',
+          style: 'index.css',
+          user: req.session.user
+      }
+  )
+});
+
+router.get("/login", (req, res) => {
+  res.render(
+    "login",
+    {
+      title: "Login",
+      style: "index.css"
+    }
+  )
+});
+
+
+
+router.get("/register", (req, res) => {
+  res.render(
+    "register",
+    {
+      title: "Register",
+      style: "index.css"
+    }
+  )
+})
+
+
+
+
 
 export default router;

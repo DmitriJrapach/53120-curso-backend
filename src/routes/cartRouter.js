@@ -123,7 +123,7 @@ router.put('/:cid/products/:pid', async (req, res) => {
 // DELETE /api/carts/:cid
 router.delete('/:cid', async (req, res) => {
     try {
-        const result = await CartService.clearCart(req.params.cid);
+        const result = await CartService.deleteCart(req.params.cid);
         res.send({
             status: 'success',
             payload: result
