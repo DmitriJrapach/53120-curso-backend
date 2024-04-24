@@ -3,17 +3,14 @@
     <hr>
     
     <form class="box" method="post" action="http://localhost:8080/api/sessions/login">
-
         <label for="email">Email</label>
         <input type="email" name="email" id="email">
-
         <label for="password">Password</label>
         <input type="password" name="password" id="password">
-
-        <button type="submit">Login</button>
+        <button class="button" type="submit">Login</button>
     </form>
     <br>
-    <span><a href="http://localhost:8080/products/register" target="_self">Register</a></span>
+    <span><a href="http://localhost:8080/products/register" target="_self" class="button">Register</a></span>
 </div>
 
 {{#if failLogin}}

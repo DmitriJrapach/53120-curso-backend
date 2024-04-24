@@ -1,5 +1,5 @@
 import {Router} from 'express';
-
+import {auth} from '../middleware/auth.js';
 import userModel from '../dao/models/userModel.js';
 import {createHash, isValidPassword} from '../utils/functionsUtils.js';
 
@@ -27,40 +27,48 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.post("/login", async (req, res) => {
-    try {
-        req.session.failLogin = false;
-        const result = await userModel.findOne({email: req.body.email}).lean();
-        if (!result) {
-            req.session.failLogin = true;
-            return res.redirect("http://localhost:8080/products/login?error=Usuario no encontrado");
-        }
+// router.post("/login", auth, async (req, res) => {
+//     try {
+//         req.session.failLogin = false;
+//         const result = await userModel.findOne({email: req.body.email}).lean();
+//         if (!result) {
+//             req.session.failLogin = true;
+//             return res.redirect("http://localhost:8080/products/login?error=Usuario no encontrado");
+//         }
 
         
-        if (!isValidPassword(result, req.body.password)) {
-            req.session.failLogin = true;
-            return res.redirect("http://localhost:8080/products/login?error=Contraseña incorrecta");
+//         if (!isValidPassword(result, req.body.password)) {
+//             req.session.failLogin = true;
+//             return res.redirect("http://localhost:8080/products/login?error=Contraseña incorrecta");
             
-        }
+//         }
 
-        delete result.password;
-        req.session.user = result;
-        console.log('Datos del usuario almacenados en la sesión:', req.session.user);
+//         delete result.password;
+//         req.session.user = result;
+//         console.log('Datos del usuario almacenados en la sesión:', req.session.user);
 
-        return res.redirect("http://localhost:8080/products/user");
+//         return res.redirect("http://localhost:8080/products");
+//     } catch (error) {
+//         console.error('Error during login:', error);
+//         req.session.failLogin = true;
+//         return res.redirect("http://localhost:8080/products/login");
+//     }
+// });
+router.post("/login", auth, async (req, res) => {
+    try {
+        return res.redirect("http://localhost:8080/products");
     } catch (error) {
         console.error('Error during login:', error);
         req.session.failLogin = true;
         return res.redirect("http://localhost:8080/products/login");
     }
 });
-
-
-
 router.post("/logout", (req, res) => {
+    console.log("Se está ejecutando la función de logout");
     req.session.destroy(error => {
-        res.redirect('/login');
+        res.redirect("http://localhost:8080/products/login");
+        console.log("Usuario desconectado")
     })
-  });
-
+    
+});
 export default router;

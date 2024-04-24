@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { productManagerDB } from '../dao/productManagerDB.js';
-import {auth} from '../middleware/auth.js';
+
 const router = Router();
 const ProductService = new productManagerDB();
 
@@ -81,17 +81,6 @@ router.get("/chat", (req, res) => {
     )
 });
 
-router.get("/user", auth, (req, res) => {
-  res.render(
-      'user',
-      {
-          title: 'Coder House',
-          style: 'index.css',
-          user: req.session.user
-      }
-  )
-});
-
 router.get("/login", (req, res) => {
   res.render(
     "login",
@@ -102,7 +91,15 @@ router.get("/login", (req, res) => {
   )
 });
 
-
+router.get("/logout", (req, res) => {
+  res.render(
+    "login",
+    {
+      title: "Logout",
+      style: "index.css"
+    }
+  )
+})
 
 router.get("/register", (req, res) => {
   res.render(
