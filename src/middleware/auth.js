@@ -1,9 +1,4 @@
-// export const auth = function (req, res, next) {
-//     if (!req.session.user) {
-//         return res.redirect("/login");
-//     }
-//     return next();
-// }
+
 import { isValidPassword } from '../utils/functionsUtils.js';
 import userModel from '../dao/models/userModel.js';
 
@@ -39,9 +34,9 @@ export const auth = async function (req, res, next) {
 
             return res.redirect("http://localhost:8080/products");
         } else {
-            // Si es el administrador hardcodeado, almacena su información en la sesión
             req.session.user = { first_name }; // Puedes incluir más detalles del administrador aquí si es necesario
-            req.session.admin = true; // El usuario es administrador
+            req.session.user.role = 'admin'; // Establece el rol como administrador
+            req.session.admin = true;
 
             console.log('Datos del administrador almacenados en la sesión:', req.session.user);
 

@@ -1,5 +1,5 @@
 <div class="box">
-    <h1>Bienvenido {{user.role}} {{user.first_name}}</h1>  
+    <h1>Bienvenido {{#if user.admin}}admin{{else}}usuario{{/if}} {{user.first_name}}</h1>  
     <hr>
     <h2>Productos</h2>
     <form class="box" method="post" action="http://localhost:8080/api/sessions/logout">
