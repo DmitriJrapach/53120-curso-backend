@@ -2,49 +2,32 @@
 import { isValidPassword } from '../utils/functionsUtils.js';
 import userModel from '../dao/models/userModel.js';
 
-export const auth = async function (req, res, next) {
-    const { email, password } = req.query;
-
+const auth = async function (req, res, next) {
     try {
-        // Verifica si el usuario es el administrador hardcodeado
-        const isAdmin = (email === "adminCoder@coder.com" && password === "adminCod3r123");
+        req.session.failLogin = false;
+        const { email, password } = req.body;
 
-        // Si el usuario no es un administrador, verifica en la base de datos
-        if (!isAdmin) {
-            req.session.failLogin = false;
-            const result = await userModel.findOne({ email: req.body.email }).lean();
-            if (!result) {
-                req.session.failLogin = true;
-                return res.redirect("http://localhost:8080/products/login?error=Usuario no encontrado");
-            }
+        // Verifica si el usuario existe en la base de datos
+        const user = await userModel.findOne({ email }).lean();
 
-            if (!isValidPassword(result, req.body.password)) {
-                req.session.failLogin = true;
-                return res.redirect("http://localhost:8080/products/login?error=Contraseña incorrecta");
-            }
-
-            // Elimina la contraseña del usuario antes de almacenarlo en la sesión
-            delete result.password;
-
-            // Almacena los datos del usuario en la sesión
-            req.session.user = result;
-            req.session.admin = false; // El usuario no es administrador
-
-            console.log('Datos del usuario almacenados en la sesión:', req.session.user);
-
-            return res.redirect("http://localhost:8080/products");
-        } else {
-            req.session.user = { first_name }; // Puedes incluir más detalles del administrador aquí si es necesario
-            req.session.user.role = 'admin'; // Establece el rol como administrador
-            req.session.admin = true;
-
-            console.log('Datos del administrador almacenados en la sesión:', req.session.user);
-
-            return res.redirect("http://localhost:8080/products");
+        if (!user || !isValidPassword(user, password)) {
+            req.session.failLogin = true;
+            return res.redirect("http://localhost:8080/products/login?error=Usuario o contraseña incorrectos");
         }
+
+        // Elimina la contraseña del usuario antes de almacenarlo en la sesión
+        delete user.password;
+
+        // Almacena los datos del usuario en la sesión
+        req.session.user = user;
+
+        // Si la autenticación es exitosa, pasa al siguiente middleware o controlador
+        next();
     } catch (error) {
-        console.error('Error durante la autenticación:', error);
+        console.error('Error during authentication:', error);
         req.session.failLogin = true;
         return res.redirect("http://localhost:8080/products/login");
     }
 };
+
+export default auth;

@@ -12,7 +12,8 @@ import __dirname from './utils/constantsUtil.js';
 import {Server} from 'socket.io';
 import websocket from './websocket.js';
 import mongoose from "mongoose";
-
+import passport from 'passport';
+import initializatePassport from './config/passportConfig.js';
 const app = express();
 
 //MongoDB conect 
@@ -43,6 +44,11 @@ connectToMongoDB();
 
 // conexion()
 
+// App ID: 889172
+
+// Client ID: Iv1.bf30467e040e4f77
+
+// Client secrets: 968df71058136ac7f84188074390cf84af49f2c2  
 
 //Handlebars Config
 app.engine('handlebars', handlebars.engine());
@@ -53,6 +59,7 @@ app.set('view engine', 'handlebars');
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
+
 //Session Middleware
 app.use(session(
     {
@@ -67,6 +74,10 @@ app.use(session(
         saveUninitialized: true
     }
 ));
+
+initializatePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //Routers
 app.use('/api/sessions', userRouter);

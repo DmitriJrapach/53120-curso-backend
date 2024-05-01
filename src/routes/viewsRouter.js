@@ -51,25 +51,25 @@ router.get("/products", (req, res) => {
   res.render("products", { user: user });
 });
 
-// router.get('/realtimeproducts', async (req, res) => {
-//     try {
-//         // Obtener parámetros de búsqueda del query string
-//         const { limit = 10, page = 1, category, availability, sort = null } = req.query;
+router.get('/realtimeproducts', async (req, res) => {
+    try {
+        // Obtener parámetros de búsqueda del query string
+        const { limit = 10, page = 1, category, availability, sort = null } = req.query;
 
-//         // Obtener productos con los parámetros de consulta
-//         const products = await ProductService.getAllProducts(limit, page, { category, availability }, sort);
+        // Obtener productos con los parámetros de consulta
+        const products = await ProductService.getAllProducts(limit, page, { category, availability }, sort);
         
-//         // Renderizar la vista con los productos
-//         res.render('realTimeProducts', {
-//             title: 'Productos',
-//             style: 'index.css',
-//             products: products.docs // Aquí se utiliza la propiedad docs del resultado
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         // Manejar el error aquí
-//     }
-// });
+        // Renderizar la vista con los productos
+        res.render('realTimeProducts', {
+            title: 'Productos',
+            style: 'index.css',
+            products: products.docs // Aquí se utiliza la propiedad docs del resultado
+        });
+    } catch (error) {
+        console.error(error);
+        // Manejar el error aquí
+    }
+});
 
 router.get("/chat", (req, res) => {
     res.render(
@@ -86,7 +86,8 @@ router.get("/login", (req, res) => {
     "login",
     {
       title: "Login",
-      style: "index.css"
+      style: "index.css",
+      failLogin: req.session.failLogin ?? false
     }
   )
 });
@@ -106,7 +107,8 @@ router.get("/register", (req, res) => {
     "register",
     {
       title: "Register",
-      style: "index.css"
+      style: "index.css",
+      failRegister: req.session.failRegister ?? false
     }
   )
 })
