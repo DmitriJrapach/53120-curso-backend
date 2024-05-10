@@ -73,7 +73,7 @@ const initializatePassport = () => {
             clientID: CLIENT_ID,
             clientSecret: SECRET_ID,
             callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
-    },
+        },
     async (accessToken, refreshToken, profile, done) => {
         try {
             console.log(profile); 
@@ -81,8 +81,11 @@ const initializatePassport = () => {
             if(!user) {
                 let newUser = {
                     username: profile._json.login,
-                    name: profile._json.name,
-                    password: ''
+                    first_name: "GitHub",
+                    last_name: "Usuario",
+                    age: 18,
+                    email: "github_" + profile._json.id + "@example.com",
+                    password: "12345"
                 }
                 let result = await userModel.create(newUser);
                 done(null, result);
