@@ -1,4 +1,7 @@
+import { hash } from "bcrypt";
 import mongoose from "mongoose";
+import cartModel from "./cartModel.js";
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const userCollection = "users";
 
@@ -33,9 +36,21 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         minLength: 5,
-        required: true
+        required: true,
+        hash: true
     },
+    cart: {        
+        type: [{
+             cart: {
+                 type: mongoose.Schema.Types.ObjectId,
+                 ref: "carts" // Referencia al modelo de productos
+             },             
+         }],
+        
+        
+    }
 });
+
 
 const userModel = mongoose.model(userCollection, userSchema);
 

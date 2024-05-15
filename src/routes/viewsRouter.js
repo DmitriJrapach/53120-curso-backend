@@ -36,8 +36,8 @@ router.get("/", async (req, res) => {
       page: result.page,
       hasPrevPage: result.hasPrevPage,
       hasNextPage: result.hasNextPage,
-      prevLink: result.prevPage ? `http://localhost:8080/products?page=${result.prevPage}` : null,
-      nextLink: result.nextPage ? `http://localhost:8080/products?page=${result.nextPage}` : null,
+      prevLink: result.prevPage ? `http://localhost:8080/?page=${result.prevPage}` : null,
+      nextLink: result.nextPage ? `http://localhost:8080/?page=${result.nextPage}` : null,
       isValid: isValid,
       user: user // Pasar los datos del usuario a la plantilla
     });
@@ -45,11 +45,6 @@ router.get("/", async (req, res) => {
     console.error(error);
   }
 })
-
-router.get("/products", (req, res) => {
-  const user = req.session.user;
-  res.render("products", { user: user });
-});
 
 router.get('/realtimeproducts', async (req, res) => {
     try {

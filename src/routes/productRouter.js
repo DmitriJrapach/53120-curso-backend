@@ -7,34 +7,22 @@ const ProductService = new productManagerDB();
 
 router.get('/', async (req, res) => {
     try {
-      const user = req.session.user;  
-      let { limit = 10, page = 1, query = {}, sort = null} = req.query;
-      const result = await ProductService.getAllProducts(limit, page, query, sort);
-      res.send({
-        status: 'success',
-        payload: result.docs,
-        totalPages: result.totalPages,
-        prevPage: result.prevPage,
-        nextPage: result.nextPage,
-        page: result.page,
-        hasPrevPage: result.hasPrevPage,
-        hasNextPage: result.hasNextPage,
-        prevLink: result.prevPage ? `http://localhost:8080/api/products?page=${result.prevPage}` : null,
-        nextLink: result.nextPage ? `http://localhost:8080/api/products?page=${result.nextPage}` : null,
-        user: user
-      })
-    } catch (error) {
-      console.error(error)
-    }
-  })
-// router.get('/', async (req, res) => {
-//     const result = await ProductService.getAllProducts();
+        const user = req.session.user;
+        const products = await ProductService.getAllProducts();
 
-//     res.send({
-//         status: 'success',
-//         payload: result
-//     });
-// });
+        res.send({
+            status: 'success',
+            payload: products,
+            user: user
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            status: 'error',
+            message: 'Internal server error'
+        });
+    }
+});
 
 router.get('/:pid', async (req, res) => {
 
