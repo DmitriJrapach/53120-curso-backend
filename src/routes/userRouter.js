@@ -20,45 +20,38 @@ router.get("/githubcallback", passport.authenticate('github', {failureRedirect: 
     res.redirect('/');
 });
 
-router.post(
-    "/register",
-    passport.authenticate("register", { failureRedirect: "/register" }),
-    (req, res) => {
-        res.redirect('/');
+router.post("/register", async (req, res) => {
+    try {
+        const { first_name, last_name, email, age, password } = req.body;
+        const result = await UserService.addUser({ first_name, last_name, email, age, password });
+        res.send({
+            status: 'success',
+            message: result
+        });
+    } catch (error) {
+        res.status(400).send({
+            status: 'error',
+            message: error.message
+        });
     }
-);
+});
 
-
-// router.post(
-//     "/login",
-//     passport.authenticate("login", { failureRedirect: "/login" }),
-//     (req, res) => {
-//         if (!req.user) {
-//             return res.send(401).send({
-//                 status: "error",
-//                 message: "Error Login!"
-//             });
-//         }
-
-//         req.session.user = {
-//             first_name: req.user.first_name,
-//             last_name: req.user.last_name,
-//             email: req.user.email,
-//             age: req.user.age,
-//             role: req.user.role
-//         }
-
-//         return res.redirect("/");
-//     }
-// );
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const token = await UserService.loginUser(email, password);
+        const user = await UserService.loginUser(email, password);
 
-        res.cookie('auth', token, { maxAge: 60*60*1000 }).send({
+        res.cookie('auth', user.token, { maxAge: 60*60*1000 }).send({
             status: 'success',
-            token
+            token: user.token,
+            user: {
+                _id: user._id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+                age: user.age,
+                role: user.role
+            }
         });
         
     } catch (error) {
@@ -69,13 +62,35 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/current', passport.authenticate('jwt', {session: false}), async (req, res) => {
+router.get('/current', (req, res, next) => {
+    console.log("Middleware de Passport JWT");
+    passport.authenticate('jwt', {session: false}, (err, user, info) => {
+        console.log("Después de passport.authenticate");
+        if (err) { return next(err); }
+        if (!user) { 
+            console.log("Usuario no autenticado");
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        req.logIn(user, { session: false }, (err) => {
+            if (err) { return next(err); }
+            console.log("Usuario autenticado");
+            next();
+        });
+    })(req, res, next);
+}, async (req, res) => {
+    console.log("Después del Middleware");
     res.send({
         user: req.user
-    })
+    });
 });
 
-router.get('/:uid', passport.authenticate('jwt', {session: false}), authorization, async (req, res) => {
+// router.get('/current', passport.authenticate('jwt', {session: false}), async (req, res) => {
+//     res.send({
+//         user: req.user
+//     })
+// });
+
+router.get('/:uid', passport.authenticate('jwt', { session: false }), authorization, async (req, res) => {
     try {
         const result = await UserService.getUser(req.params.uid);
         res.send({
