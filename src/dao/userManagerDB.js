@@ -39,29 +39,7 @@ class UserManager {
         }
     }
 
-    async loginUserWithGithub(githubUserData) {
-        console.log("Datos recibidos de GitHub:", githubUserData);
-        // Extraer los datos necesarios del usuario de GitHub
-        const { id, email, name } = githubUserData;
     
-        try {
-            // Verificar si el usuario ya existe en la base de datos
-            let user = await userModel.findOne({ email }).lean();
-    
-            if (!user) {
-                // Si el usuario no existe, crear uno nuevo
-                user = await userModel.create({ first_name: name, email, github_id: id });
-            }
-    
-            // Generar un token JWT para el usuario
-            const token = jwt.sign(user, "secretKey", { expiresIn: "1h" });
-    
-            // Devolver el usuario junto con el token
-            return { user, token };
-        } catch (error) {
-            throw new Error("Error al autenticar usuario con GitHub");
-        }
-    }
 }
 
 export default UserManager;

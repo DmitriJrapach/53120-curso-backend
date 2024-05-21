@@ -14,8 +14,10 @@ router.get("/github", passport.authenticate('github', { scope: ['user:email'] })
 });
 
 router.get("/githubcallback", passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
+    console.log("Datos recibidos de GitHub:", req.user);
+    
     req.session.user = req.user;
-    res.redirect('/');
+    res.redirect('/products');
 });
 
 router.post("/register", async (req, res) => {
@@ -55,10 +57,7 @@ router.post('/login', async (req, res) => {
         // Redirigir a la página de productos
         res.redirect('/products');
     } catch (error) {
-        res.status(400).render('login', {
-            status: 'error',
-            message: error.message
-        });
+        res.redirect('/login');
     }
 });
 
