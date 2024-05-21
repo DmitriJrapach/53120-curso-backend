@@ -1,4 +1,3 @@
-
 import express from 'express';
 import handlebars from 'express-handlebars';
 import session from 'express-session';
@@ -7,18 +6,18 @@ import userRouter from './routes/userRouter.js';
 import productRouter from './routes/productRouter.js';
 import cartRouter from './routes/cartRouter.js';
 import viewsRouter from './routes/viewsRouter.js';
-import messageRouter from './routes/messageRouter.js'
+import messageRouter from './routes/messageRouter.js';
 import __dirname from './utils/constantsUtil.js';
-import {Server} from 'socket.io';
+import { Server } from 'socket.io';
 import websocket from './websocket.js';
 import mongoose from "mongoose";
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
-import initializatePassport from './config/passportConfig.js';
+import initializePassport from './config/passportConfig.js';
 
 const app = express();
 
-//MongoDB conect 
+// Conexión a MongoDB
 const uri = "mongodb+srv://dmitri:123@cluster0.u7ei4vo.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0";
 
 async function connectToMongoDB() {
@@ -30,45 +29,39 @@ async function connectToMongoDB() {
     }
 }
 
-// Llamar a la función para establecer la conexión
 connectToMongoDB();
 
-//Handlebars Config
+// Configuración de Handlebars
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/../views');
 app.set('view engine', 'handlebars');
 
-//Middlewares
+// Middlewares
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser());
 
-//Session Middleware
-app.use(session(
-    {
-        store: mongoStore.create(
-            {
-                mongoUrl: uri,
-                ttl: 3600
-            }
-        ),
-        secret: 'secretPhrase',
-        resave: true,
-        saveUninitialized: true
-    }
-));
+// Middleware de sesión
+app.use(session({
+    store: mongoStore.create({
+        mongoUrl: uri,
+        ttl: 3600
+    }),
+    secret: 'secretPhrase',
+    resave: true,
+    saveUninitialized: true
+}));
 
-initializatePassport();
+initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Middleware para redirigir la ruta raíz a la pantalla de login
 app.get('/', (req, res) => {
     res.redirect('/login');
 });
 
-//Routers
+// Routers
 app.use('/api/sessions', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
@@ -83,4 +76,3 @@ const httpServer = app.listen(PORT, () => {
 const io = new Server(httpServer);
 
 websocket(io);
-

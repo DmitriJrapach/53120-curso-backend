@@ -9,24 +9,24 @@ const userSchema = mongoose.Schema({
     first_name: {
         type: String,
         minLength: 3,
-        required: true
+        // required: true
     },
     last_name: {
         type: String,
         minLength: 3,
-        required: true
+        // required: true
     },
     email: {
         type: String,
         minLength: 5,
-        required: true,
+        // required: true,
         unique: true
     },
     
     age: {
         type: Number,
         min: 18,
-        required: true
+        // required: true
     },
     role: {
         type: String,
@@ -36,7 +36,7 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         minLength: 5,
-        required: true,
+        // required: true,
         hash: true
     },
     cart: {        
