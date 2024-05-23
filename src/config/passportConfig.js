@@ -29,21 +29,32 @@ const initializePassport = () => {
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        let email = profile.emails ? profile.emails[0].value : null;
-        let user = await userModel.findOne({ githubId: profile.id });
-  
-        if (!user) {
-          // Crea un nuevo usuario con los datos de GitHub
-          user = await userModel.create({ 
-            githubId: profile.id, 
-            username: profile.username, 
-            email: email
-            // No necesitas proporcionar los campos requeridos que no están disponibles en GitHub
-          });
-        }
-        return done(null, user);
-      } catch (error) {
-        return done(error, null);
+          console.log(profile); 
+          // Generar el email ficticio
+          const email = `github_${profile.id}@example.com`;
+
+          // Buscar usuario por ID de GitHub o por email ficticio
+          let user = await userModel.findOne({ $or: [{ githubId: profile.id }, { email: email }] });
+
+          if (!user) {
+              // Si no existe, crear un nuevo usuario
+              let newUser = {
+                  username: profile.username,
+                  first_name: "GitHub",
+                  last_name: "Usuario",
+                  age: 18,
+                  email: email, // Email ficticio
+                  password: "12345",
+                  githubId: profile.id  // Guardar el ID de GitHub para futuras búsquedas
+              };
+              let result = await userModel.create(newUser);
+              return done(null, result);
+          } else {
+              // Si existe, iniciar sesión con el usuario existente
+              return done(null, user);
+          }
+      } catch(error) {
+          return done(error);
       }
     }
   ));

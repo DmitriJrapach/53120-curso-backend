@@ -24,10 +24,8 @@ router.post("/register", async (req, res) => {
     try {
         const { first_name, last_name, email, age, password } = req.body;
         const result = await UserService.addUser({ first_name, last_name, email, age, password });
-        res.send({
-            status: 'success',
-            message: result
-        });
+        
+        res.redirect('/login');
     } catch (error) {
         res.status(400).send({
             status: 'error',
