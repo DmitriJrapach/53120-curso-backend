@@ -14,11 +14,14 @@ import mongoose from "mongoose";
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import initializePassport from './config/passportConfig.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
 // Conexión a MongoDB
-const uri = "mongodb+srv://dmitri:123@cluster0.u7ei4vo.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.URI;
 
 async function connectToMongoDB() {
     try {
