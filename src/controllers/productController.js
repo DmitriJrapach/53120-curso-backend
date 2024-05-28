@@ -3,22 +3,24 @@ import productService from '../services/productService.js';
 
 const getAllProducts = async (req, res) => {
     try {
-        const user = req.session.user;
-        const products = await productService.getAllProducts();
-
-        res.send({
-            status: 'success',
-            payload: products,
-            user: user
-        });
+      const user = req.session.user;
+      const { limit, page, ...query } = req.query;  // Desestructuramos limit, page y el resto en query
+      const products = await productService.getAllProducts(limit, page, query);
+  
+      res.send({
+        status: 'success',
+        payload: products,
+        user: user
+      });
     } catch (error) {
-        console.error(error);
-        res.status(500).send({
-            status: 'error',
-            message: 'Internal server error'
-        });
+      console.error(error);
+      res.status(500).send({
+        status: 'error',
+        message: 'Internal server error'
+      });
     }
-};
+  };
+  
 
 const getProductByID = async (req, res) => {
     try {

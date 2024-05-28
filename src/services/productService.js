@@ -3,13 +3,13 @@ import { productManagerDB } from '../dao/productManagerDB.js';
 
 const productManager = new productManagerDB();
 
-const getAllProducts = async (limit, page, query, sort) => {
+const getAllProducts = async (limit = 10, page = 1, query = {}, sort = {}) => {
     try {
-        return await productManager.getAllProducts(limit, page, query, sort);
+      return await productManager.getAllProducts(limit, page, query, sort);
     } catch (error) {
-        throw new Error(error.message);
+      throw new Error(error.message);
     }
-};
+  };
 
 const getProductByID = async (pid) => {
     try {
