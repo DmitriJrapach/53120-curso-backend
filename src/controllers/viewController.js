@@ -43,7 +43,7 @@ const getProducts = async (req, res) => {
 const getRealTimeProducts = async (req, res) => {
     try {
         const user = req.session.user;
-        const { limit = 10, page = 1, category, availability, sort = null } = req.query;
+        const { limit = 20, page = 1, category, availability, sort = null } = req.query;
 
         const products = await productService.getAllProducts(limit, page, { category, availability }, sort);
         

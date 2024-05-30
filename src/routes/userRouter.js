@@ -1,8 +1,7 @@
-// src/routes/userRoutes.js
 import { Router } from 'express';
 import passport from 'passport';
 import userController from '../controllers/userController.js';
-import { authorization } from "../middleware/auth.js";
+import { passportCall } from "../utils/authUtil.js";
 
 const router = Router();
 
@@ -14,20 +13,9 @@ router.post("/register", userController.register);
 
 router.post('/login', userController.login);
 
-router.get('/current', (req, res, next) => {
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
-        if (err) { return next(err); }
-        if (!user) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-        req.logIn(user, { session: false }, (err) => {
-            if (err) { return next(err); }
-            next();
-        });
-    })(req, res, next);
-}, userController.current);
+router.get('/current', passportCall('jwt'), userController.current);
 
-router.get('/:uid', passport.authenticate('jwt', { session: false }), authorization, userController.getUser);
+router.get('/:uid', passportCall('jwt'), userController.getUser);
 
 router.post("/logout", userController.logout);
 

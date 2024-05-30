@@ -1,8 +1,8 @@
-import { productManagerDB } from "./dao/productManagerDB.js";
+import ProductRepository from "./dao/repositories/productRepository.js";
 import { messageManagerDB } from "./dao/messageManagerDB.js";
 import messageModel from "./dao/models/messageModel.js";
 
-const ProductService = new productManagerDB();
+const productRepository = new ProductRepository();
 const messageManager = new messageManagerDB(); // Mover la inicialización aquí
 
 export default (io) => {
@@ -45,8 +45,8 @@ export default (io) => {
         // Evento para crear un nuevo producto
         socket.on("createProduct", async (data) => {
             try {
-                await ProductService.createProduct(data);
-                const products = await ProductService.getAllProducts();
+                await productRepository.createProduct(data);
+                const products = await productRepository.getAllProducts();
                 // Emitir evento de productos actualizados a todos los clientes
                 io.emit("publishProducts", products);
             } catch (error) {
@@ -58,7 +58,7 @@ export default (io) => {
         // Evento para eliminar un producto
         socket.on("deleteProduct", async (data) => {
             try {
-                const result = await ProductService.deleteProduct(data.pid);
+                const result = await productRepository.deleteProduct(data.pid);
                 // Emitir evento de productos actualizados a todos los clientes
                 io.emit("publishProducts", result);
             } catch (error) {

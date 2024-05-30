@@ -1,4 +1,3 @@
-// src/controllers/userController.js
 import userService from '../services/userService.js';
 
 const githubAuth = (req, res) => {

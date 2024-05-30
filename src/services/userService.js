@@ -21,7 +21,7 @@ const loginUser = async (email, password) => {
 
 const getUser = async (uid) => {
     try {
-        return await userManager.getUser(uid); // Suponiendo que tienes esta función en userManager
+        return await userManager.getUser(uid);
     } catch (error) {
         throw new Error(error.message);
     }
