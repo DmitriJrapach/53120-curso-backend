@@ -1,16 +1,15 @@
 import ProductRepository from "./dao/repositories/productRepository.js";
-import { messageManagerDB } from "./dao/messageManagerDB.js";
-import messageModel from "./dao/models/messageModel.js";
+import MessageRepository from "./dao/repositories/messageRepository.js";
 
 const productRepository = new ProductRepository();
-const messageManager = new messageManagerDB(); // Mover la inicialización aquí
+const messageRepository = new MessageRepository();
 
 export default (io) => {
     // Manejador de eventos para la conexión de WebSocket
     io.on("connection", async (socket) => {
         try {
             // Obtener todos los mensajes al conectarse un nuevo cliente
-            const messages = await messageManager.getAllMessages();
+            const messages = await messageRepository.getAllMessages();
             console.log("Nuevo cliente conectado: ", socket.id);
 
             // Emitir los mensajes al cliente conectado
@@ -24,10 +23,10 @@ export default (io) => {
         socket.on("message", async (data) => {
             try {
                 // Insertar el mensaje en la base de datos
-                await messageManager.insertMessage(data);
+                await messageRepository.insertMessage(data);
         
                 // Obtener todos los mensajes actualizados
-                const messages = await messageManager.getAllMessages();
+                const messages = await messageRepository.getAllMessages();
         
                 // Emitir los mensajes actualizados a todos los clientes
                 io.emit("messages", messages);
@@ -37,6 +36,7 @@ export default (io) => {
                 socket.emit("statusError", "Error al procesar el mensaje");
             }
         });
+
         socket.on("userConnect", data => {
             // Emitir un mensaje a todos los clientes informando que un usuario se ha conectado
             io.emit("newUser", data + " se ha conectado al chat");

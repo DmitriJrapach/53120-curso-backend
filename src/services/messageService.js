@@ -1,11 +1,11 @@
 // src/services/messageService.js
-import { messageManagerDB } from '../dao/messageManagerDB.js';
+import MessageRepository from '../dao/repositories/messageRepository.js';
 
-const messageManager = new messageManagerDB();
+const messageRepository = new MessageRepository();
 
 const getAllMessages = async () => {
     try {
-        return await messageManager.getAllMessages();
+        return await messageRepository.getAllMessages();
     } catch (error) {
         throw new Error(error.message);
     }
@@ -13,7 +13,7 @@ const getAllMessages = async () => {
 
 const insertMessage = async (newMessage) => {
     try {
-        return await messageManager.insertMessage(newMessage);
+        return await messageRepository.insertMessage(newMessage);
     } catch (error) {
         throw new Error(error.message);
     }
@@ -21,7 +21,7 @@ const insertMessage = async (newMessage) => {
 
 const getMessageById = async (id) => {
     try {
-        return await messageManager.getMessageById(id);
+        return await messageRepository.getMessageById(id);
     } catch (error) {
         throw new Error(error.message);
     }
@@ -29,7 +29,7 @@ const getMessageById = async (id) => {
 
 const updateMessage = async (id, newData) => {
     try {
-        return await messageManager.updateMessage(id, newData);
+        return await messageRepository.updateMessage(id, newData);
     } catch (error) {
         throw new Error(error.message);
     }
@@ -37,7 +37,7 @@ const updateMessage = async (id, newData) => {
 
 const deleteMessage = async (id) => {
     try {
-        return await messageManager.deleteMessage(id);
+        return await messageRepository.deleteMessage(id);
     } catch (error) {
         throw new Error(error.message);
     }

@@ -1,5 +1,5 @@
 // src/services/userService.js
-import UserManager from '../dao/userManagerDB.js';
+import UserManager from '../dao/userDao.js';
 
 const userManager = new UserManager();
 
