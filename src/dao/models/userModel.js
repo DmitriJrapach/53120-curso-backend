@@ -29,10 +29,7 @@ const userSchema = new mongoose.Schema({
         enum: ['admin', 'user'], 
         default: 'user'
     },
-    githubId: { 
-        type: String, 
-        unique: true 
-    },
+    
     password: {
         type: String,
         minLength: 5,

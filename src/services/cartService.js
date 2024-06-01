@@ -21,9 +21,13 @@ const getCartById = async (id) => {
 
 const createCart = async () => {
   try {
-    return await cartRepository.createCart();
+      const newCart = await cartRepository.createCart();
+      console.log('Carrito creado en cartService.createCart:', newCart);
+      return newCart;
   } catch (error) {
-    throw new Error(error.message);
+      console.error('Error en cartService.createCart:', error.message);
+      console.error('Stack trace:', error.stack);
+      throw new Error('Error al crear el carrito');
   }
 };
 

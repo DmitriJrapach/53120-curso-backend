@@ -21,9 +21,18 @@ class UserRepository {
 
     async createUser(userData) {
         try {
-            return await userModel.create(userData);
+            // Eliminar githubId si está presente en los datos del usuario
+            if ('githubId' in userData) {
+                delete userData.githubId;
+            }
+            console.log('Datos recibidos en UserRepository.createUser:', userData);
+            const newUser = await userModel.create(userData);
+            console.log('Usuario creado en UserRepository.createUser:', newUser);
+            return newUser;
         } catch (error) {
-            throw new Error("Error al crear el usuario");
+            console.error('Error en UserRepository.createUser:', error.message);
+            console.error('Stack trace:', error.stack);
+            throw new Error('Error al crear el usuario');
         }
     }
 

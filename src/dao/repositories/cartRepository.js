@@ -29,12 +29,15 @@ class CartRepository {
 
   async createCart() {
     try {
-      const newCart = await cartModel.create({}); // Puedes pasar un objeto con los datos del carrito si es necesario
-      return newCart;
+        const newCart = await cartModel.create({});
+        console.log('Carrito creado en CartRepository.createCart:', newCart);
+        return newCart;
     } catch (error) {
-      throw new Error('Error al crear el carrito');
+        console.error('Error en CartRepository.createCart:', error.message);
+        console.error('Stack trace:', error.stack);
+        throw new Error('Error al crear el carrito');
     }
-  }
+}
 
   async updateCart(cartId, products) {
     try {

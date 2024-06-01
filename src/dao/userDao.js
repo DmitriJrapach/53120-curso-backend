@@ -9,6 +9,7 @@ class UserManager {
     }
 
     async addUser({ first_name, last_name, email, age, password }) {
+        console.log('Datos recibidos en UserManager.addUser:', { first_name, last_name, email, age, password });
         if (!first_name || !last_name || !email || !age || !password) {
             throw new Error('Todos los campos de usuario son obligatorios!');
         }
@@ -18,10 +19,11 @@ class UserManager {
             if (existingUser) {
                 throw new Error('El usuario ya existe');
             }
-            
+
             // Crear un carrito para el nuevo usuario
             const newCart = await cartModel.create({});
-            
+            console.log('Nuevo carrito creado:', newCart);
+
             // Crear el nuevo usuario con el carrito asignado
             const newUser = await this.userRepository.createUser({ 
                 first_name, 
@@ -31,10 +33,13 @@ class UserManager {
                 password: hashedPassword, 
                 cart: newCart._id 
             });
-            
+            console.log('Nuevo usuario creado:', newUser);
+
             return 'Usuario creado correctamente';
         } catch (error) {
-            throw new Error(error.message);
+            console.error('Error en UserManager.addUser:', error.message);
+            console.error('Stack trace:', error.stack);
+            throw new Error(`Error al crear el usuario: ${error.message}`);
         }
     }
 
