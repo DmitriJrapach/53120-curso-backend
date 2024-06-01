@@ -1,4 +1,3 @@
-// src/controllers/cartController.js
 import cartService from '../services/cartService.js';
 
 const getAllCarts = async (req, res) => {
@@ -106,12 +105,43 @@ const updateProductQuantity = async (req, res) => {
     }
 };
 
+const checkout = async (req, res) => {
+    try {
+        const cart = await cartService.checkout(req.params.cid);
+        res.send({
+            status: 'success',
+            payload: cart
+        });
+    } catch (error) {
+        res.status(400).send({
+            status: 'error',
+            message: error.message
+        });
+    }
+};
+
 const deleteCart = async (req, res) => {
     try {
         const result = await cartService.deleteCart(req.params.cid);
         res.send({
             status: 'success',
             payload: result
+        });
+    } catch (error) {
+        res.status(400).send({
+            status: 'error',
+            message: error.message
+        });
+    }
+};
+
+const getCartView = async (req, res) => {
+    try {
+        const cart = await cartService.getCartById(req.params.cid);
+        res.render('cart', {
+            cart: cart,
+            user: req.session.user,
+            style: 'main.css'
         });
     } catch (error) {
         res.status(400).send({
@@ -129,5 +159,7 @@ export default {
     removeProductByID,
     updateCart,
     updateProductQuantity,
-    deleteCart
+    deleteCart,
+    checkout,
+    getCartView
 };

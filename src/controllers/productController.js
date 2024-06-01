@@ -3,24 +3,27 @@ import productService from '../services/productService.js';
 
 const getAllProducts = async (req, res) => {
     try {
-      const user = req.session.user;
-      const { limit, page, ...query } = req.query;  // Desestructuramos limit, page y el resto en query
-      const products = await productService.getAllProducts(limit, page, query);
-  
-      res.send({
-        status: 'success',
-        payload: products,
-        user: user
-      });
+        const user = req.session.user;
+        const { limit, page, ...query } = req.query;
+        const products = await productService.getAllProducts(limit, page, query);
+
+        res.render('viewProduct', {
+            products: products.docs,
+            user: user,
+            isValid: products.docs.length > 0,
+            hasPrevPage: products.hasPrevPage,
+            hasNextPage: products.hasNextPage,
+            prevLink: products.hasPrevPage ? `/api/products?page=${products.prevPage}` : null,
+            nextLink: products.hasNextPage ? `/api/products?page=${products.nextPage}` : null
+        });
     } catch (error) {
-      console.error(error);
-      res.status(500).send({
-        status: 'error',
-        message: 'Internal server error'
-      });
+        console.error(error);
+        res.status(500).send({
+            status: 'error',
+            message: 'Internal server error'
+        });
     }
-  };
-  
+};
 
 const getProductByID = async (req, res) => {
     try {
@@ -96,10 +99,23 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+const addProductToCart = async (req, res) => {
+    try {
+        await cartService.addProductByID(req.params.cid, req.params.pid);
+        res.redirect(`/api/carts/${req.params.cid}/view`);
+    } catch (error) {
+        res.status(400).send({
+            status: 'error',
+            message: error.message
+        });
+    }
+};
+
 export default {
     getAllProducts,
     getProductByID,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    addProductToCart
 };

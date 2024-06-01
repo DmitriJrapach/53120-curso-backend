@@ -1,8 +1,7 @@
-
-// src/dao/userManagerDB.js
 import UserRepository from "./repositories/userRepository.js";
 import { isValidPassword, createHash } from "../utils/functionsUtils.js";
 import jwt from "jsonwebtoken";
+import cartModel from "./models/cartModel.js"; // Importar el modelo de carrito
 
 class UserManager {
     constructor() {
@@ -19,7 +18,20 @@ class UserManager {
             if (existingUser) {
                 throw new Error('El usuario ya existe');
             }
-            await this.userRepository.createUser({ first_name, last_name, email, age, password: hashedPassword });
+            
+            // Crear un carrito para el nuevo usuario
+            const newCart = await cartModel.create({});
+            
+            // Crear el nuevo usuario con el carrito asignado
+            const newUser = await this.userRepository.createUser({ 
+                first_name, 
+                last_name, 
+                email, 
+                age, 
+                password: hashedPassword, 
+                cart: newCart._id 
+            });
+            
             return 'Usuario creado correctamente';
         } catch (error) {
             throw new Error(error.message);
@@ -45,7 +57,6 @@ class UserManager {
         }
     }
 
-    // Agregar otros métodos que usen el repositorio según sea necesario
     async getUser(uid) {
         try {
             return await this.userRepository.findById(uid);

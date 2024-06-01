@@ -2,6 +2,7 @@ import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import userModel from '../dao/models/userModel.js';
+import cartModel from '../dao/models/cartModel.js'; // Importar el modelo de carrito
 
 const initializePassport = () => {
     // Estrategia JWT
@@ -35,6 +36,9 @@ const initializePassport = () => {
             let user = await userModel.findOne({ $or: [{ githubId: profile.id }, { email: email }] });
 
             if (!user) {
+                // Crear un carrito para el nuevo usuario
+                const newCart = await cartModel.create({});
+                
                 const newUser = {
                     username: profile.username,
                     first_name: "GitHub",
@@ -42,7 +46,8 @@ const initializePassport = () => {
                     age: 18,
                     email: email,
                     password: "12345",
-                    githubId: profile.id
+                    githubId: profile.id,
+                    cart: newCart._id // Asignar el carrito al nuevo usuario
                 };
                 let result = await userModel.create(newUser);
                 return done(null, result);

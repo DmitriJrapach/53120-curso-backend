@@ -1,11 +1,8 @@
-import { hash } from "bcrypt";
 import mongoose from "mongoose";
-import cartModel from "./cartModel.js";
-import mongoosePaginate from 'mongoose-paginate-v2';
 
 const userCollection = "users";
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     first_name: {
         type: String,
         minLength: 3,
@@ -22,7 +19,6 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true
     },
-    
     age: {
         type: Number,
         min: 18,
@@ -31,7 +27,7 @@ const userSchema = mongoose.Schema({
     role: {
         type: String,
         enum: ['admin', 'user'], 
-        default: 'user' 
+        default: 'user'
     },
     githubId: { 
         type: String, 
@@ -43,18 +39,12 @@ const userSchema = mongoose.Schema({
         required: true,
         hash: true
     },
-    cart: {        
-        type: [{
-             cart: {
-                 type: mongoose.Schema.Types.ObjectId,
-                 ref: "carts" // Referencia al modelo de productos
-             },             
-         }],
-        
-        
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts", // Referencia al modelo de carritos
+        required: true
     }
 });
-
 
 const userModel = mongoose.model(userCollection, userSchema);
 

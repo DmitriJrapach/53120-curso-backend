@@ -15,6 +15,7 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import initializePassport from './config/passportConfig.js';
 import dotenv from 'dotenv';
+import { create } from 'express-handlebars';
 
 dotenv.config();
 
@@ -35,7 +36,15 @@ async function connectToMongoDB() {
 connectToMongoDB();
 
 // Configuración de Handlebars
-app.engine('handlebars', handlebars.engine());
+const hbs = create({
+    helpers: {
+        eq: (a, b) => a === b
+    }
+});
+
+
+// Configuración de Handlebars
+app.engine('handlebars', hbs.engine);
 app.set('views', __dirname + '/../views');
 app.set('view engine', 'handlebars');
 

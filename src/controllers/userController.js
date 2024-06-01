@@ -1,4 +1,7 @@
+// src/controllers/userController.js
+
 import userService from '../services/userService.js';
+import { userDTO } from '../dto/userDTO.js';
 
 const githubAuth = (req, res) => {
     res.send({
@@ -49,8 +52,9 @@ const login = async (req, res) => {
 };
 
 const current = (req, res) => {
+    const user = userDTO(req.user);
     res.send({
-        user: req.user
+        user
     });
 };
 

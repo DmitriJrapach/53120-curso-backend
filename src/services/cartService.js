@@ -35,6 +35,37 @@ const addProductByID = async (cartId, productId) => {
   }
 };
 
+const getCartView = async (req, res) => {
+  try {
+      const cart = await cartService.getCartById(req.params.cid);
+      res.render('cart', {
+          cart: cart,
+          user: req.session.user,
+          style: 'main.css'
+      });
+  } catch (error) {
+      res.status(400).send({
+          status: 'error',
+          message: error.message
+      });
+  }
+};
+
+const checkout = async (cartId) => {
+  try {
+      const cart = await cartRepository.getCartById(cartId);
+      if (!cart) {
+          throw new Error('Carrito no encontrado');
+      }
+      // Aquí podrías añadir la lógica para procesar el pago y vaciar el carrito
+      cart.products = [];
+      await cart.save();
+      return cart;
+  } catch (error) {
+      throw new Error(error.message);
+  }
+};
+
 const updateCart = async (cartId, products) => {
   try {
     return await cartRepository.updateCart(cartId, products);
@@ -66,5 +97,7 @@ export default {
   addProductByID,
   updateCart,
   updateProductQuantity,
-  deleteCart
+  deleteCart,
+  getCartView,
+  checkout
 };

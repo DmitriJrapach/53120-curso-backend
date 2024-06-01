@@ -24,6 +24,6 @@ loginForm.addEventListener('submit', async (event) => {
             window.location.href = '/login';
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error:', error);                                                                                                                                                                                                                                                                                             
     }
 });
