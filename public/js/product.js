@@ -1,13 +1,16 @@
-
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     const forms = document.querySelectorAll('.add-to-cart-form');
-
     forms.forEach(form => {
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
             const productId = form.getAttribute('data-product-id');
             const cartId = form.getAttribute('data-cart-id');
+
+            if (!cartId) {
+                console.error('Cart ID not found');
+                return;
+            }
 
             try {
                 const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
@@ -18,13 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 if (response.ok) {
-                    const messageElement = document.getElementById('message');
-                    messageElement.style.display = 'block';
+                    document.getElementById('message').style.display = 'block';
                     setTimeout(() => {
-                        messageElement.style.display = 'none';
+                        document.getElementById('message').style.display = 'none';
                     }, 3000);
                 } else {
-                    console.error('Error al agregar el producto al carrito');
+                    throw new Error('Error al agregar el producto al carrito');
                 }
             } catch (error) {
                 console.error('Error al agregar el producto al carrito', error);

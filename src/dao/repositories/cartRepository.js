@@ -16,14 +16,14 @@ class CartRepository {
 
   async getCartById(cid) {
     try {
-      const cart = await cartModel.findById(cid).populate('products.product').lean();
-      if (!cart) {
-        throw new Error('Carrito no encontrado');
-      }
-      return cart;
+        const cart = await cartModel.findById(cid).populate('products.product').lean();
+        if (!cart) {
+            throw new Error('Carrito no encontrado');
+        }
+        return cart;
     } catch (error) {
-      console.error(error);
-      throw new Error("Error al obtener el carrito");
+        console.error(error);
+        throw new Error("Error al obtener el carrito");
     }
   }
 

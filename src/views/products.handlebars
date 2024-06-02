@@ -35,7 +35,7 @@
                     <p>Descripción: {{this.description}}</p>
                     <p>Precio: $ {{this.price}}</p>
                     <form class="add-to-cart-form" data-product-id="{{this._id}}" data-cart-id="{{../user.cartId}}">
-                        <button type="submit" class="button">Comprar</button>
+                        <button type="submit" class="button">Agregar al carrito</button>
                     </form>
                 </div>
                 <br>
@@ -53,9 +53,14 @@
                 <a href="{{nextLink}}" class="button">Siguiente >></a>
             {{/if}}
         </div>
+        <script>
+            console.log("ID del carrito:", "{{../user.cartId}}");
+        </script>
     {{else}}
         <h2>No hay productos para mostrar</h2>
     {{/if}}
+    <hr>
+    <a href="/cart/{{user.cartId}}" class="button">Ver Carrito</a>
 </div>
 
 <div id="message" style="display:none;">Producto agregado!</div>

@@ -17,4 +17,6 @@ router.get("/logout", viewController.logout);
 
 router.get("/register", viewController.register);
 
+router.get("/cart/:cid", viewController.isAuthenticated, viewController.getCartView);
+
 export default router;

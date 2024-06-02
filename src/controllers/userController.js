@@ -45,7 +45,8 @@ const login = async (req, res) => {
             last_name: user.last_name,
             email: user.email,
             age: user.age,
-            role: user.role
+            role: user.role,
+            cartId: user.cart._id.toString()
         };
 
         res.redirect('/products');

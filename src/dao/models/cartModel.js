@@ -19,7 +19,7 @@ const cartSchema = new mongoose.Schema({
     }
 });
 
-cartSchema.plugin(mongoosePaginate)
+cartSchema.plugin(mongoosePaginate);
 
-export const cartModel = mongoose.model(cartCollection, cartSchema);
+const cartModel = mongoose.model(cartCollection, cartSchema);
 export default cartModel;

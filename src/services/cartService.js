@@ -11,11 +11,15 @@ const getAllCarts = async () => {
   }
 };
 
-const getCartById = async (id) => {
+const getCartById = async (cid) => {
   try {
-    return await cartRepository.getCartById(id);
+      const cart = await cartRepository.getCartById(cid);
+      if (!cart) {
+          throw new Error('Carrito no encontrado');
+      }
+      return cart;
   } catch (error) {
-    throw new Error(error.message);
+      throw new Error(error.message);
   }
 };
 

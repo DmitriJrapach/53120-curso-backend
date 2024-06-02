@@ -1,5 +1,6 @@
 // src/controllers/viewController.js
 import productService from '../services/productService.js';
+import cartService from '../services/cartService.js'
 
 const isAuthenticated = (req, res, next) => {
     if (req.session.user) {
@@ -95,6 +96,33 @@ const register = (req, res) => {
     });
 };
 
+const getCartView = async (req, res) => {
+    try {
+        const cart = await cartService.getCartById(req.params.cid);
+        if (!cart) {
+            console.log('Carrito no encontrado');
+            return res.status(404).send({
+                status: 'error',
+                message: 'Carrito no encontrado'
+            });
+        }
+        console.log('Carrito:', cart);
+        console.log('Usuario:', req.user);
+
+        res.render('cart', {
+            cart: cart,
+            user: req.user,
+            style: 'main.css'
+        });
+    } catch (error) {
+        console.error('Error al obtener la vista del carrito:', error);
+        res.status(400).send({
+            status: 'error',
+            message: error.message
+        });
+    }
+};
+
 export default {
     isAuthenticated,
     getProducts,
@@ -102,5 +130,6 @@ export default {
     chat,
     login,
     logout,
-    register
+    register,
+    getCartView
 };
