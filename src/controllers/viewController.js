@@ -98,6 +98,7 @@ const register = (req, res) => {
 
 const getCartView = async (req, res) => {
     try {
+        const user = req.session.user;
         const cart = await cartService.getCartById(req.params.cid);
         if (!cart) {
             console.log('Carrito no encontrado');
@@ -106,12 +107,12 @@ const getCartView = async (req, res) => {
                 message: 'Carrito no encontrado'
             });
         }
-        console.log('Carrito:', cart);
-        console.log('Usuario:', req.user);
+        // console.log('Carrito:', cart);
+        // console.log('Usuario:', user);
 
         res.render('cart', {
             cart: cart,
-            user: req.user,
+            user: user,
             style: 'main.css'
         });
     } catch (error) {

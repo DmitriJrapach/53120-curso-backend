@@ -1,51 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de Compras</title>
-    <link rel="stylesheet" href="/css/{{style}}">
-</head>
-<body>
-    <div class="box">
-        <h1>Carrito de Compras de {{user.first_name}}</h1>
-        <hr>
-        <h2>Productos en el Carrito</h2>
-        {{#if cart.products.length}}
-            <div class="cart-products">
-                {{#each cart.products}}
-                    <div class="product-card">
-                        <h3>{{this.product.title}}</h3>
-                        <p>Categoría: {{this.product.category}}</p>
-                        <p>Descripción: {{this.product.description}}</p>
-                        <p>Precio: $ {{this.product.price}}</p>
-                        <p>Cantidad: {{this.quantity}}</p>
-                        <form method="post" action="/api/carts/{{../cart._id}}/products/{{this.product._id}}">
-                            <button type="submit" class="button">Eliminar</button>
-                        </form>
-                    </div>
-                    <br>
-                {{/each}}
-            </div>
-        {{else}}
-            <h2>No hay productos en el carrito</h2>
-        {{/if}}
-        <hr>
-        <h2>Información del Usuario</h2>
-        <form class="box" id="user-info-form">
-            <label for="first_name">Nombre:</label>
-            <input type="text" id="first_name" name="first_name" value="{{user.first_name}}" disabled>
-            <label for="last_name">Apellido:</label>
-            <input type="text" id="last_name" name="last_name" value="{{user.last_name}}" disabled>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="{{user.email}}" disabled>
-            <label for="age">Edad:</label>
-            <input type="number" id="age" name="age" value="{{user.age}}" disabled>
+<div class="box">
+  <h2>Carrito de {{user.first_name}}</h2>
+  <div class="products-box">
+    {{#each cart.products}}
+      <div class="product-card">
+        <h3>{{this.product.title}}</h3>
+        <p>Cantidad: {{this.quantity}}</p>
+        <form class="remove-from-cart-form" data-product-id="{{this.product._id}}" data-cart-id="{{../cart._id}}">
+          <button type="submit" class="button">Eliminar del carrito</button>
         </form>
-        <hr>
-        <form method="post" action="/api/carts/{{cart._id}}/checkout">
-            <button type="submit" class="button">Confirmar Compra</button>
-        </form>
-    </div>
-</body>
-</html>
+      </div>
+      <br>
+    {{/each}}
+  </div>
+</div>
+
+<div id="message" style="display:none;">Producto eliminado!</div>
+
+<script src="/js/cart.js"></script>

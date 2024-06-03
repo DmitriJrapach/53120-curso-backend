@@ -61,18 +61,21 @@ const addProductByID = async (req, res) => {
 };
 
 const removeProductByID = async (req, res) => {
-    try {
-        const result = await cartService.removeProductByID(req.params.cid, req.params.pid);
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
+  try {
+    const { cid, pid } = req.params;
+    console.log(`Received DELETE request for cart ID: ${cid} and product ID: ${pid}`);
+    const result = await cartService.removeProductByID(cid, pid);
+    res.send({
+      status: 'success',
+      payload: result
+    });
+  } catch (error) {
+    console.error('Error en el controlador al eliminar el producto del carrito:', error);
+    res.status(400).send({
+      status: 'error',
+      message: error.message
+    });
+  }
 };
 
 const updateCart = async (req, res) => {
@@ -145,8 +148,8 @@ const getCartView = async (req, res) => {
                 message: 'Carrito no encontrado'
             });
         }
-        console.log('Carrito:', cart);
-        console.log('Usuario:', req.user);
+        // console.log('Carrito:', cart);
+        // console.log('Usuario:', req.user);
 
         res.render('cart', {
             cart: cart,

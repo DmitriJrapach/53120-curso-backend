@@ -11,7 +11,7 @@ export const passportCall = (strategy) => {
                 });
             }
 
-            console.log("Authenticated user:", user);
+            // console.log("Authenticated user:", user);
             req.user = user;
             next();
         })(req, res, next);

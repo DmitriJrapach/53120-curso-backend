@@ -12,7 +12,7 @@ const initializePassport = () => {
             secretOrKey: "secretKey"
         }, async (jwt_payload, done) => {
             try {
-                console.log("JWT Payload:", jwt_payload);
+                // console.log("JWT Payload:", jwt_payload);
                 const user = await userModel.findById(jwt_payload._id);
                 if (user) {
                     return done(null, user);

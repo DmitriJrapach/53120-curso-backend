@@ -15,7 +15,8 @@ const cartSchema = new mongoose.Schema({
                 default: 1
             }
         }],
-        default: [] // Definir como un array vacío por defecto
+        default: [], // Definir como un array vacío por defecto
+        _id: false
     }
 });
 
