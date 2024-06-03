@@ -135,12 +135,12 @@ class CartRepository {
       if (!cart) {
         throw new Error('Carrito no encontrado');
       }
-
+  
       const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
       if (productIndex === -1) {
         throw new Error('Producto no encontrado en el carrito');
       }
-
+  
       cart.products.splice(productIndex, 1);
       await cart.save();
       return cart;

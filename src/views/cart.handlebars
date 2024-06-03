@@ -4,13 +4,20 @@
     {{#each cart.products}}
       <div class="product-card">
         <h3>{{this.product.title}}</h3>
+        <hr>
+        <p>Precio: $ {{this.product.price}}</p>
         <p>Cantidad: {{this.quantity}}</p>
         <form class="remove-from-cart-form" data-product-id="{{this.product._id}}" data-cart-id="{{../cart._id}}">
           <button type="submit" class="button">Eliminar del carrito</button>
-        </form>
+        </form>        
       </div>
       <br>
     {{/each}}
+    <div class="box">
+      <a href="/products" class="button">
+        Volver   
+    </a>
+    </div>
   </div>
 </div>
 

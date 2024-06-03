@@ -113,7 +113,7 @@ const getCartView = async (req, res) => {
         res.render('cart', {
             cart: cart,
             user: user,
-            style: 'main.css'
+            style: 'index.css'
         });
     } catch (error) {
         console.error('Error al obtener la vista del carrito:', error);

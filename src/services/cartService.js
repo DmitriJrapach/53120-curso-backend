@@ -48,26 +48,14 @@ const addProductByID = async (cartId, productId) => {
 const removeProductByID = async (cartId, productObjectId) => {
   try {
     console.log(`Removing product ID: ${productObjectId} from cart ID: ${cartId}`);
-    const cart = await cartRepository.getCartById(cartId);
-    if (!cart) {
-      throw new Error('Carrito no encontrado');
-    }
-
-    // Convertir productObjectId a ObjectId
-    const productObjectIdConverted = new mongoose.Types.ObjectId(productObjectId);
-
-    // Eliminar el producto del array de productos del carrito
-    cart.products = cart.products.filter(p => p.product.toString() !== productObjectIdConverted.toString());
-
-    // Guardar los cambios
-    await cartModel.findByIdAndUpdate(cartId, { products: cart.products });
-
-    return cart;
+    const result = await cartRepository.removeProductByID(cartId, productObjectId);
+    return result;
   } catch (error) {
     console.error('Error en el servicio al eliminar el producto del carrito:', error);
     throw new Error(error.message);
   }
 };
+
 
 
 
