@@ -41,6 +41,9 @@ const getProductByID = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
+
+    console.log('Request body in controller before processing:', req.body);
+    console.log('Request files in controller before processing:', req.files);
     if (req.files) {
         req.body.thumbnails = [];
         req.files.forEach((file) => {
