@@ -1,5 +1,6 @@
 import cartService from '../services/cartService.js';
 
+
 const getAllCarts = async (req, res) => {
     try {
         const result = await cartService.getAllCarts();
@@ -108,21 +109,6 @@ const updateProductQuantity = async (req, res) => {
     }
 };
 
-const checkout = async (req, res) => {
-    try {
-        const cart = await cartService.checkout(req.params.cid);
-        res.send({
-            status: 'success',
-            payload: cart
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-};
-
 const deleteCart = async (req, res) => {
     try {
         const result = await cartService.deleteCart(req.params.cid);
@@ -165,7 +151,6 @@ const getCartView = async (req, res) => {
     }
 };
 
-
 export default {
     getAllCarts,
     getCartById,
@@ -175,6 +160,5 @@ export default {
     updateCart,
     updateProductQuantity,
     deleteCart,
-    checkout,
     getCartView
 };

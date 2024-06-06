@@ -51,6 +51,7 @@ class UserRepository {
             throw new Error("Error al eliminar el usuario");
         }
     }
+
 }
 
 export default UserRepository;

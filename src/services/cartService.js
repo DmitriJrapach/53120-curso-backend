@@ -1,7 +1,8 @@
 // src/services/cartService.js
 import CartRepository from '../dao/repositories/cartRepository.js';
-import mongoose from 'mongoose';
 import cartModel from '../dao/models/cartModel.js';
+import cartDTO from  '../dto/cartDTO.js';
+
 
 const cartRepository = new CartRepository();
 
@@ -45,6 +46,17 @@ const addProductByID = async (cartId, productId) => {
   }
 };
 
+const addProductToCart = async (cartId, productId, quantity) => {
+  try {
+    const cart = await cartRepository.addProductToCart(cartId, productId, quantity);
+    if (!cart) {
+      throw new Error('Error adding product to cart');
+    }
+    return new cartDTO(cart);
+  } catch (error) {
+    throw error;
+  }
+}
 const removeProductByID = async (cartId, productObjectId) => {
   try {
     console.log(`Removing product ID: ${productObjectId} from cart ID: ${cartId}`);
@@ -56,12 +68,33 @@ const removeProductByID = async (cartId, productObjectId) => {
   }
 };
 
+const deleteProductFromCart = async (cartId, productId) => {
+  try {
+    const cart = await cartModel.findOneAndUpdate(
+      {_id: cartId},
+      { $pull: { products: {product: productId}}},
+    )
+    return cart;
+  } catch (error) {
+    throw error
+  }
+}
 
-
+const deleteAllProductsFromCart = async (cartId) => {
+  try {
+    const cart = cartRepository.deleteAllProductsFromCart(cartId);
+    if (!cart) {
+      throw new Error('Error deleting products from cart');
+    }
+    return new cartDTO(cart);
+  } catch (error) {
+    throw error;
+  }
+}
 
 const getCartView = async (req, res) => {
   try {
-      const cart = await cartService.getCartById(req.params.cid);
+      const cart = await cartRepository.getCartById(req.params.cid);
       res.render('cart', {
           cart: cart,
           user: req.session.user,
@@ -75,20 +108,6 @@ const getCartView = async (req, res) => {
   }
 };
 
-const checkout = async (cartId) => {
-  try {
-      const cart = await cartRepository.getCartById(cartId);
-      if (!cart) {
-          throw new Error('Carrito no encontrado');
-      }
-      // Aquí podrías añadir la lógica para procesar el pago y vaciar el carrito
-      cart.products = [];
-      await cart.save();
-      return cart;
-  } catch (error) {
-      throw new Error(error.message);
-  }
-};
 
 const updateCart = async (cartId, products) => {
   try {
@@ -114,15 +133,22 @@ const deleteCart = async (cartId) => {
   }
 };
 
+const getStockfromProducts = async(cart) => {
+  return await cartRepository.getStockfromProducts(cart);
+}
+
 export default {
   getAllCarts,
   getCartById,
   createCart,
   addProductByID,
+  addProductToCart,
   removeProductByID,
+  deleteProductFromCart,
+  deleteAllProductsFromCart,
   updateCart,
   updateProductQuantity,
   deleteCart,
   getCartView,
-  checkout
+  getStockfromProducts
 };

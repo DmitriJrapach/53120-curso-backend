@@ -1,8 +1,13 @@
 // src/repositories/cartRepository.js
 import cartModel from "../models/cartModel.js";
 import productModel from "../models/productModel.js";
+import cartsDTO from "../../dto/cartDTO.js";
+
 
 class CartRepository {
+  constructor(dao) {
+    this.dao = dao;
+}
   async getAllCarts() {
     try {
       return await cartModel.find();
@@ -127,6 +132,26 @@ class CartRepository {
     }
   }
   
+  async addProductToCart(cartiD, productId, quantity) {
+    try {
+      const existingProduct = await cartModel.findOne({_id: cartiD, "products.product": productId});
+      if (existingProduct) {
+        const updatedCart = cartModel.updateOne(
+          {_id: cartiD, "products.product": productId},
+          {$inc : {"products.$.quantity": quantity}}  
+        );
+        return updatedCart;
+      } 
+    
+      const updatedCart = await cartModel.updateOne(
+        {_id: cartiD},
+        {$push: {products: [{product: productId, quantity: quantity}]}}  
+      )
+      return updatedCart;
+    } catch (error) {
+      throw error
+    }
+  }
   
 
   async removeProductByID(cartId, productId) {
@@ -163,6 +188,31 @@ class CartRepository {
       return { message: `Carrito ${cartId} eliminado exitosamente` };
     } catch (error) {
       throw new Error(`Error al eliminar el carrito: ${error.message}`);
+    }
+  }
+
+  async deleteAllProductsFromCart(cartId) {
+    try {
+      const cart = await cartModel.findByIdAndUpdate(cartId, { products: []}, {new: true})
+      return cart;
+    } catch (error) {
+      throw error
+    }
+  }
+  async getStockfromProducts(cid) {
+    try {
+        const results = await this.dao.getStockfromProducts(cid);
+        return results;
+    } catch (error) {
+        throw new Error(`Could not add products to ${cid}`);
+    }
+  };
+  async getProductsFromCart(cid) {
+    try {
+      const products = await this.dao.getProductsFromCart(cid);
+      return new cartDTO(products);
+    } catch (error) {
+      throw new Error(`Products not found in ${cid}`);
     }
   }
 }
