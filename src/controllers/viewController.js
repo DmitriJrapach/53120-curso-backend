@@ -99,7 +99,21 @@ const register = (req, res) => {
 const getCartView = async (req, res) => {
     try {
         const user = req.session.user;
-        const cart = await cartService.getCartById(req.params.cid);
+
+        // Usa cartId directamente ya que hemos normalizado la sesión
+        const cartId = user.cartId;
+
+        if (!cartId) {
+            console.log('No se encontró un carrito asociado al usuario');
+            return res.status(404).send({
+                status: 'error',
+                message: 'Carrito no encontrado'
+            });
+        }
+
+        // Obtén el carrito usando el cartId
+        const cart = await cartService.getCartById(cartId);
+
         if (!cart) {
             console.log('Carrito no encontrado');
             return res.status(404).send({
@@ -107,9 +121,11 @@ const getCartView = async (req, res) => {
                 message: 'Carrito no encontrado'
             });
         }
-        // console.log('Carrito:', cart);
-        // console.log('Usuario:', user);
 
+        console.log('Carrito:', cart);
+        console.log('Usuario:', user);
+
+        // Renderiza la vista del carrito con los datos obtenidos
         res.render('cart', {
             cart: cart,
             user: user,

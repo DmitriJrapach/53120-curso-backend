@@ -3,6 +3,8 @@ import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import userModel from '../dao/models/userModel.js';
 import cartModel from '../dao/models/cartModel.js'; // Importar el modelo de carrito
+import { isValidPassword, createHash } from "../utils/functionsUtils.js";
+import UserManager from '../dao/userDao.js';
 
 const initializePassport = () => {
     // Estrategia JWT
@@ -34,22 +36,19 @@ const initializePassport = () => {
         try {
             const email = `github_${profile.id}@example.com`;
             let user = await userModel.findOne({ $or: [{ githubId: profile.id }, { email: email }] });
-
+    
             if (!user) {
-                // Crear un carrito para el nuevo usuario
-                const newCart = await cartModel.create({});
-                
                 const newUser = {
-                    username: profile.username,
                     first_name: "GitHub",
                     last_name: "Usuario",
                     age: 18,
                     email: email,
-                    password: "12345",
-                    githubId: profile.id,
-                    cart: newCart._id // Asignar el carrito al nuevo usuario
+                    password: createHash("test")
                 };
-                let result = await userModel.create(newUser);
+    
+                // Aquí utilizamos addUser en lugar de crear directamente el usuario
+                const userManager = new UserManager();
+                let result = await userManager.addUser(newUser);
                 return done(null, result);
             } else {
                 return done(null, user);
@@ -67,8 +66,19 @@ const initializePassport = () => {
     passport.deserializeUser(async (id, done) => {
         try {
             const user = await userModel.findById(id);
-            done(null, user);
+            const userSession = {
+                _id: user._id.toString(),
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+                age: user.age,
+                role: user.role,
+                cartId: user.cart.toString() // Convertir ObjectId a cadena y cambiar el nombre del campo a cartId
+            };
+            console.log("Deserialized user:", userSession);
+            done(null, userSession);
         } catch (error) {
+            console.log("Error:", error);
             done(error, null);
         }
     });

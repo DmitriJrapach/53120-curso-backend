@@ -131,28 +131,6 @@ class CartRepository {
       throw new Error(`Error al agregar producto al carrito: ${error.message}`);
     }
   }
-  
-  async addProductToCart(cartiD, productId, quantity) {
-    try {
-      const existingProduct = await cartModel.findOne({_id: cartiD, "products.product": productId});
-      if (existingProduct) {
-        const updatedCart = cartModel.updateOne(
-          {_id: cartiD, "products.product": productId},
-          {$inc : {"products.$.quantity": quantity}}  
-        );
-        return updatedCart;
-      } 
-    
-      const updatedCart = await cartModel.updateOne(
-        {_id: cartiD},
-        {$push: {products: [{product: productId, quantity: quantity}]}}  
-      )
-      return updatedCart;
-    } catch (error) {
-      throw error
-    }
-  }
-  
 
   async removeProductByID(cartId, productId) {
     try {

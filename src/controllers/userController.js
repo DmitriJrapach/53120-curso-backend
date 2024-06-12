@@ -1,5 +1,5 @@
 // src/controllers/userController.js
-
+import userModel from '../dao/models/userModel.js';
 import userService from '../services/userService.js';
 import { userDTO } from '../dto/userDTO.js';
 
@@ -49,6 +49,7 @@ const login = async (req, res) => {
             cartId: user.cart._id.toString()
         };
 
+        console.log('Usuario guardado en la sesión con cartId:', req.session.user);
         res.redirect('/products');
     } catch (error) {
         res.redirect('/login');

@@ -46,17 +46,6 @@ const addProductByID = async (cartId, productId) => {
   }
 };
 
-const addProductToCart = async (cartId, productId, quantity) => {
-  try {
-    const cart = await cartRepository.addProductToCart(cartId, productId, quantity);
-    if (!cart) {
-      throw new Error('Error adding product to cart');
-    }
-    return new cartDTO(cart);
-  } catch (error) {
-    throw error;
-  }
-}
 const removeProductByID = async (cartId, productObjectId) => {
   try {
     console.log(`Removing product ID: ${productObjectId} from cart ID: ${cartId}`);
@@ -108,7 +97,6 @@ const getCartView = async (req, res) => {
   }
 };
 
-
 const updateCart = async (cartId, products) => {
   try {
     return await cartRepository.updateCart(cartId, products);
@@ -142,7 +130,6 @@ export default {
   getCartById,
   createCart,
   addProductByID,
-  addProductToCart,
   removeProductByID,
   deleteProductFromCart,
   deleteAllProductsFromCart,
