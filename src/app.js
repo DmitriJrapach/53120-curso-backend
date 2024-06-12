@@ -16,6 +16,8 @@ import cookieParser from 'cookie-parser';
 import initializePassport from './config/passportConfig.js';
 import dotenv from 'dotenv';
 import { create } from 'express-handlebars';
+import compression from 'express-compression';
+import errors from './middleware/errors/index.js';
 
 dotenv.config();
 
@@ -53,6 +55,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser());
+app.use(compression());
+app.use(errors);
 
 // Middleware de sesión
 app.use(session({

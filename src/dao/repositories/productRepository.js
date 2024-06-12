@@ -1,6 +1,8 @@
 
 // src/repositories/productRepository.js
 import productModel from '../models/productModel.js';
+import { generateProductsErrorInfo } from '../../services/errors/info.js';
+import { updateorDeleteProductsErrorInfo } from '../../services/errors/info.js';
 
 class ProductRepository {
   async getAllProducts(limit, page, query = {}, sort) {
@@ -37,7 +39,9 @@ class ProductRepository {
       const result = await productModel.create(product);
       return result;
     } catch (error) {
-      throw new Error('Error al crear el producto');
+      // Genera un mensaje de error personalizado
+      const errorMessage = generateProductsErrorInfo(product);
+      throw new Error(errorMessage);
     }
   }
 
@@ -45,8 +49,9 @@ class ProductRepository {
     try {
       const result = await productModel.updateOne({ _id: pid }, productUpdate);
       return result;
-    } catch (error) {
-      throw new Error('Error al actualizar el producto');
+    } catch (error) {      
+      const errorMessage = updateorDeleteProductsErrorInfo(product);
+      throw new Error(errorMessage);
     }
   }
 
@@ -56,7 +61,8 @@ class ProductRepository {
       if (result.deletedCount === 0) throw new Error(`El producto ${pid} no existe!`);
       return result;
     } catch (error) {
-      throw new Error(`Error al eliminar el producto ${pid}`);
+      const errorMessage = updateorDeleteProductsErrorInfo(product);
+      throw new Error(errorMessage);
     }
   }
 }
