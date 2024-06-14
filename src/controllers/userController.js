@@ -13,7 +13,8 @@ const githubAuth = (req, res) => {
 const githubCallback = (req, res) => {
     console.log("Datos recibidos de GitHub:", req.user);
     req.session.user = req.user;
-    res.redirect('/products');
+    // Redirigir al usuario a la página de login y enviar el mensaje como parte de la cadena de consulta
+    res.redirect(`/login?message=Su usuario y password provisorios son: ${encodeURIComponent(req.user.email)} y ${encodeURIComponent(req.user.password)}`);
 };
 
 const register = async (req, res) => {
@@ -36,6 +37,9 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await userService.loginUser(email, password);
+        const message = req.query.message;
+        res.render('login', { message });
+        console.log('Usuario devuelto por loginUser:', user);
 
         res.cookie('auth', user.token, { maxAge: 60 * 60 * 1000, httpOnly: true });
 

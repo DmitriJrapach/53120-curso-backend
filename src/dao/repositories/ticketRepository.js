@@ -1,6 +1,6 @@
 // src/repository/ticketRepository.js
-import ticketDTO from "../../dto/ticketDTO.js";
-import ticketService from "../../services/ticketService.js";
+import ticketDTO from "../dto/ticketDTO.js";
+import ticketService from "../services/ticketService.js";
 import userModel from "../models/userModel.js";
 
 class TicketRepository {

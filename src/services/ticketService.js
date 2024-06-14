@@ -1,13 +1,11 @@
+// src/services/ticketService.js
 import ticketDAO from "../dao/ticketDao.js";
 import ticketDTO from "../dto/ticketDTO.js";
 
-class ticketService {
-  async getTickets() {
+class TicketService {
+  async getAllTickets(limit, page, query, sort) {
     try {
-      const tickets = await ticketDAO.getTickets();
-      if (!tickets) {
-        throw new Error("No tickets found");
-      }
+      const tickets = await ticketDAO.getAllTickets(limit, page, query, sort);
       return tickets.map((ticket) => new ticketDTO(ticket));
     } catch (error) {
       throw error;
@@ -26,29 +24,38 @@ class ticketService {
     }
   }
 
-  async getTicketsByUserId(userId) {
+  async createTicket(ticketData) {
     try {
-      const tickets = await ticketDAO.getTicketsByUserId(userId);
-      if (!tickets) {
-        throw new Error("No tickets found");
-      }
-      return new ticketDTO(tickets);
+      const newTicket = await ticketDAO.createTicket(ticketData);
+      return new ticketDTO(newTicket);
     } catch (error) {
       throw error;
     }
   }
 
-  async createTicket(ticket) {
+  async updateTicket(ticketId, updateData) {
     try {
-      const newTicket = await ticketDAO.createTicket(ticket);
-      if (!newTicket) {
-        throw new Error("Error creating ticket");
+      const updatedTicket = await ticketDAO.updateTicket(ticketId, updateData);
+      if (!updatedTicket) {
+        throw new Error(`Ticket with ID ${ticketId} does not exist!`);
       }
-      return new ticketDTO(newTicket);
+      return new ticketDTO(updatedTicket);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteTicket(ticketId) {
+    try {
+      const deletedTicket = await ticketDAO.deleteTicket(ticketId);
+      if (!deletedTicket) {
+        throw new Error(`Ticket with ID ${ticketId} does not exist!`);
+      }
+      return new ticketDTO(deletedTicket);
     } catch (error) {
       throw error;
     }
   }
 }
 
-export default new ticketService();
+export default new TicketService();

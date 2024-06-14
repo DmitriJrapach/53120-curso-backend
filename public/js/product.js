@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const productId = form.getAttribute('data-product-id');
           const cartId = form.getAttribute('data-cart-id');
 
+          console.log(`Product ID: ${productId}`); // Log the Product ID
+          console.log(`Cart ID: ${cartId}`); // Log the Cart ID
+
           if (!cartId) {
               console.error('Cart ID not found');
               return;
@@ -20,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
                   }
               });
 
+              console.log(`Response: ${JSON.stringify(response)}`); // Log the Response
+              
               if (response.ok) {
                   document.getElementById('message').style.display = 'block';
                   setTimeout(() => {

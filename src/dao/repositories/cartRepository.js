@@ -90,14 +90,21 @@ class CartRepository {
 
   async addProductByID(cid, pid) {
     try {
+      console.log(`Cart ID: ${cid}`); // Log the Cart ID
+      console.log(`Product ID: ${pid}`); // Log the Product ID
       // Verifica si el producto existe
       const product = await productModel.findById(pid);
       if (!product) {
         throw new Error(`El producto ${pid} no existe`);
       }
+      // Log the product
+      console.log(`Product: ${JSON.stringify(product)}`);
 
       // Busca el carrito por su ID
       const cart = await cartModel.findOne({ _id: cid });
+
+      // Log the cart
+      console.log(`Cart: ${JSON.stringify(cart)}`);
 
       // Si se encuentra el carrito, actualiza los productos
       if (cart) {

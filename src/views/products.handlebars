@@ -67,3 +67,8 @@
 
 <!-- Incluir el archivo JavaScript -->
 <script src="/js/product.js"></script>
+{{#if message}}
+    <script type="text/javascript">
+        alert('{{message}}');
+    </script>
+{{/if}}

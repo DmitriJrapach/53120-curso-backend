@@ -29,7 +29,7 @@ class TicketController {
     try {
       const { purchaseDateTime, amount, purchaser } = req.body;
       const ticketData = { purchaseDateTime, amount, purchaser };
-      const newTicket = await ticketRepository.createTicket(ticketData);
+      const newTicket = await ticketService.createTicket(ticketData);
       res.send({ status: "success", payload: newTicket });
     } catch (error) {
       console.error(error.message);

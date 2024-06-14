@@ -64,24 +64,9 @@ const initializePassport = () => {
     });
 
     passport.deserializeUser(async (id, done) => {
-        try {
-            const user = await userModel.findById(id);
-            const userSession = {
-                _id: user._id.toString(),
-                first_name: user.first_name,
-                last_name: user.last_name,
-                email: user.email,
-                age: user.age,
-                role: user.role,
-                cartId: user.cart.toString() // Convertir ObjectId a cadena y cambiar el nombre del campo a cartId
-            };
-            console.log("Deserialized user:", userSession);
-            done(null, userSession);
-        } catch (error) {
-            console.log("Error:", error);
-            done(error, null);
-        }
-    });
+        let myUser = await userModel.findById(id);
+        done(null, myUser);
+    })
 }
 
 const cookieExtractor = (req) => {
