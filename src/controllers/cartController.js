@@ -214,7 +214,7 @@ const purchaseCart = async (req, res) => {
 
     // Autogenerar código y autoincrementar
     let code = 0;
-    let tickets = await ticketService.getTickets();
+    let tickets = await ticketService.getAllTickets();
     if (tickets.length) {
       code = +tickets[tickets.length - 1].code + 1;
     }
