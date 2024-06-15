@@ -19,3 +19,18 @@
         alert('Login Failed!');
     </script>
 {{/if}}
+<script type="text/javascript">
+    // Verificar si hay email y contraseña en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    const password = urlParams.get('password');
+
+    if (email && password) {
+        // Decodificar y llenar los campos de entrada
+        document.getElementById('email').value = decodeURIComponent(email);
+        document.getElementById('password').value = decodeURIComponent(password);
+
+        // Mostrar una alerta con las credenciales provisionales
+        alert(`Su usuario y password provisorios son:\nEmail: ${decodeURIComponent(email)}\nPassword: ${decodeURIComponent(password)}`);
+    }
+</script>
