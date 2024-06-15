@@ -43,12 +43,13 @@ const initializePassport = () => {
                     last_name: "Usuario",
                     age: 18,
                     email: email,
-                    password: createHash("test")
+                    password: ("12345")
                 };
     
                 // Aquí utilizamos addUser en lugar de crear directamente el usuario
                 const userManager = new UserManager();
                 let result = await userManager.addUser(newUser);
+                console.log ("add user", result)
                 return done(null, result);
             } else {
                 return done(null, user);
@@ -60,6 +61,7 @@ const initializePassport = () => {
 
     // Serialización y deserialización de usuarios
     passport.serializeUser((user, done) => {
+        console.log('Serializing user:', user);
         done(null, user.id);
     });
 

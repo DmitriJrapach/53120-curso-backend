@@ -35,7 +35,7 @@ class UserManager {
             });
             console.log('Nuevo usuario creado:', newUser);
 
-            return 'Usuario creado correctamente';
+            return newUser;
         } catch (error) {
             console.error('Error en UserManager.addUser:', error.message);
             console.error('Stack trace:', error.stack);

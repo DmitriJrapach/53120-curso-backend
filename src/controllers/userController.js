@@ -14,7 +14,7 @@ const githubCallback = (req, res) => {
     console.log("Datos recibidos de GitHub:", req.user);
     req.session.user = req.user;
     // Redirigir al usuario a la página de login y enviar el mensaje como parte de la cadena de consulta
-    res.redirect(`/login?message=Su usuario y password provisorios son: ${encodeURIComponent(req.user.email)} y ${encodeURIComponent(req.user.password)}`);
+    res.redirect("/login");
 };
 
 const register = async (req, res) => {
