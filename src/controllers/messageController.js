@@ -9,6 +9,7 @@ const getAllMessages = async (req, res) => {
             payload: messages
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al obtener los mensajes:', error);
         res.status(500).json({
             status: 'error',
             message: error.message
@@ -25,6 +26,7 @@ const insertMessage = async (req, res) => {
             payload: createdMessage
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al postear el mensaje:', error);
         res.status(500).json({
             status: 'error',
             message: error.message
@@ -41,6 +43,7 @@ const getMessageById = async (req, res) => {
             payload: message
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al obtener el mensaje:', error);
         res.status(500).json({
             status: 'error',
             message: error.message
@@ -58,6 +61,7 @@ const updateMessage = async (req, res) => {
             payload: updatedMessage
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al actualizar el mensaje:', error);
         res.status(500).json({
             status: 'error',
             message: error.message
@@ -74,6 +78,7 @@ const deleteMessage = async (req, res) => {
             payload: deletedMessage
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al eliminar el elmensaje:', error);
         res.status(500).json({
             status: 'error',
             message: error.message

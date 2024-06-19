@@ -8,7 +8,7 @@ class TicketController {
       const result = await ticketService.getAllTickets(limit, page, query, sort);
       res.send({ status: "success", payload: result });
     } catch (error) {
-      console.error(error.message);
+      req.logger.warning ('Error en el controlador al obtener los tickets:', error);
       res.status(500).send({ status: "error", message: "Error fetching tickets" });
     }
   }
@@ -20,7 +20,7 @@ class TicketController {
       if (!result) throw new Error(`Ticket with ID ${tid} does not exist!`);
       res.send({ status: "success", payload: result });
     } catch (error) {
-      console.error(error.message);
+      req.logger.warning ('Error en el controlador al obtener el ticket:', error);
       res.status(400).send({ status: "error", message: error.message });
     }
   }
@@ -32,7 +32,7 @@ class TicketController {
       const newTicket = await ticketService.createTicket(ticketData);
       res.send({ status: "success", payload: newTicket });
     } catch (error) {
-      console.error(error.message);
+      req.logger.warning ('Error en el controlador al crear el ticket:', error);
       res.status(400).send({ status: "error", message: error.message });
     }
   }
@@ -45,7 +45,7 @@ class TicketController {
       if (!updatedTicket) throw new Error(`Ticket with ID ${tid} does not exist!`);
       res.send({ status: "success", payload: updatedTicket });
     } catch (error) {
-      console.error(error.message);
+      req.logger.warning ('Error en el controlador al actualizar el ticket:', error);
       res.status(400).send({ status: "error", message: error.message });
     }
   }
@@ -57,7 +57,7 @@ class TicketController {
       if (!deletedTicket) throw new Error(`Ticket with ID ${tid} does not exist!`);
       res.send({ status: "success", payload: deletedTicket });
     } catch (error) {
-      console.error(error.message);
+      req.logger.warning ('Error en el controlador al eliminar el ticket:', error);
       res.status(400).send({ status: "error", message: error.message });
     }
   }

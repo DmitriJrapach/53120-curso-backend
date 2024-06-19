@@ -12,6 +12,7 @@ const getAllCarts = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al obtener todos los carritos:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -27,6 +28,7 @@ const getCartById = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al obtener el carrito:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -42,6 +44,7 @@ const createCart = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al crear el carrito:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -57,6 +60,7 @@ const addProductByID = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning('Error en el controlador al agregar el producto del carrito:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -67,14 +71,13 @@ const addProductByID = async (req, res) => {
 const removeProductByID = async (req, res) => {
   try {
     const { cid, pid } = req.params;
-    console.log(`Received DELETE request for cart ID: ${cid} and product ID: ${pid}`);
     const result = await cartService.removeProductByID(cid, pid);
     res.send({
       status: 'success',
       payload: result
     });
   } catch (error) {
-    console.error('Error en el controlador al eliminar el producto del carrito:', error);
+    req.logger.warning('Error en el controlador al eliminar el producto del carrito:', error);
     res.status(400).send({
       status: 'error',
       message: error.message
@@ -90,6 +93,7 @@ const updateCart = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al actualizar el carrito:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -105,6 +109,7 @@ const updateProductQuantity = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al actualizar la cantidad de productos', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -120,6 +125,7 @@ const deleteCart = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al eliminar el carrito:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -133,14 +139,11 @@ const getCartView = async (req, res) => {
         console.log(cartId)
         const cart = await cartService.getCartById(cartId);
         if (!cart) {
-            console.log('Carrito no encontrado');
             return res.status(404).send({
                 status: 'error',
                 message: 'Carrito no encontrado'
             });
         }
-        console.log('Carrito:', cart);
-        console.log('Usuario:', req.user);
 
         res.render('cart', {
             cart: cart,
@@ -148,37 +151,32 @@ const getCartView = async (req, res) => {
             style: 'main.css'
         });
     } catch (error) {
-        console.error('Error al obtener la vista del carrito:', error);
+        req.logger.warning('Error al obtener la vista del carrito:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
         });
     }
 };
+
 const purchaseCart = async (req, res) => {
   const cartId = req.params.cid;
   const userId = req.session.user._id;
 
   try {
-    console.log(`Iniciando compra para el carrito con ID: ${cartId}`);
-    console.log(`ID de usuario desde la sesión: ${userId}`);
 
     const user = await userService.getUser(userId);
-    console.log('Usuario obtenido:', user);
 
     // Verificar que el carrito pertenece al usuario
     if (user.cart.toString() !== cartId) {
-      console.log('El carrito no pertenece al usuario.');
       return res.status(401).send({ status: 'error', message: 'No tienes permisos para comprar este carrito' });
     }
 
     // Obtener el carrito por ID
     const cart = await cartService.getCartById(cartId);
-    console.log('Carrito obtenido:', cart);
 
     // Verificar si el carrito tiene productos
     if (!cart.products.length) {
-      console.log('El carrito no tiene productos.');
       return res.status(400).send({ status: 'error', message: 'No hay productos en el carrito' });
     }
 
@@ -230,7 +228,7 @@ const purchaseCart = async (req, res) => {
     // Mostrar el ticket y los productos sin stock
     res.status(200).send({ status: 'success', message: 'Compra realizada', ticket, itemsRemoved });
   } catch (error) {
-    console.error('Error durante la compra:', error);
+    req.logger.warning('Error durante la compra:', error);
     res.status(400).send({ status: 'error', message: error.message, error: error });
   }
 };

@@ -1,6 +1,7 @@
 // src/controllers/viewController.js
 import productService from '../services/productService.js';
 import cartService from '../services/cartService.js'
+import { generateProducts } from "../utils/mockUtil.js";
 
 const isAuthenticated = (req, res, next) => {
     if (req.session.user) {
@@ -37,7 +38,7 @@ const getProducts = async (req, res) => {
             user: user
         });
     } catch (error) {
-        console.error(error);
+        req.logger.warning ('Error en el controlador al obtener los productos:', error);
     }
 };
 
@@ -55,7 +56,7 @@ const getRealTimeProducts = async (req, res) => {
             user: user
         });
     } catch (error) {
-        console.error(error);
+        req.logger.warning ('Error en el controlador al obtener los productos en tiempo real:', error);
     }
 };
 
@@ -132,12 +133,20 @@ const getCartView = async (req, res) => {
             style: 'index.css'
         });
     } catch (error) {
-        console.error('Error al obtener la vista del carrito:', error);
+        req.logger.warning ('Error en el controlador al obtener vista del carrito:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
         });
     }
+};
+
+const mockProducts = (_req, res) => {
+    let products = [];
+    for (let i = 0; i < 100; i++) {
+      products.push(generateProducts());
+    }
+    res.render('mocking', { title: 'Mocking Products', products });
 };
 
 export default {
@@ -148,5 +157,6 @@ export default {
     login,
     logout,
     register,
-    getCartView
+    getCartView,
+    mockProducts
 };

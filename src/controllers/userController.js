@@ -26,7 +26,7 @@ const register = async (req, res) => {
         const result = await userService.addUser({ first_name, last_name, email, age, password });
         res.redirect('/login');
     } catch (error) {
-        console.error('Error en el controlador register:', error.message);
+        req.logger.warning ('Error en el controlador al registarr usuario:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -40,8 +40,6 @@ const login = async (req, res) => {
         const { email, password } = req.body;
         const user = await userService.loginUser(email, password);
         
-        console.log('Usuario devuelto por loginUser:', user);
-
         res.cookie('auth', user.token, { maxAge: 60 * 60 * 1000, httpOnly: true });
 
         req.session.user = {
@@ -57,6 +55,7 @@ const login = async (req, res) => {
         console.log('Usuario guardado en la sesión con cartId:', req.session.user);
         res.redirect('/products');
     } catch (error) {
+        req.logger.warning ('Error en el controlador al logearse:', error);
         res.redirect('/login');
     }
 };
@@ -77,6 +76,7 @@ const getUser = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al obtener al usuario', error);
         res.status(400).send({
             status: 'error',
             message: error.message

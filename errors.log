@@ -1,0 +1,14 @@
+fatal: Logger test fatal message
+fatal: Logger test fatal message
+fatal: Logger test fatal message
+error: Logger test error message
+warning: Logger test warning message
+info: Logger test info message
+http: GET in /login - 17:34:41
+http: GET in /loggerTest - 17:34:52
+fatal: Logger test fatal message
+error: Logger test error message
+warning: Logger test warning message
+info: Logger test info message
+http: Logger test http message
+debug: Logger test debug message

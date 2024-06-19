@@ -17,7 +17,7 @@ const getAllProducts = async (req, res) => {
             nextLink: products.hasNextPage ? `/api/products?page=${products.nextPage}` : null
         });
     } catch (error) {
-        console.error(error);
+        req.logger.warning ('Error en el controlador al obtener los productos:', error);
         res.status(500).send({
             status: 'error',
             message: 'Internal server error'
@@ -33,6 +33,7 @@ const getProductByID = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al obtener el producto:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -58,6 +59,7 @@ const createProduct = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al crear el producto:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -80,6 +82,7 @@ const updateProduct = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al eactulalizar el producto:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -95,6 +98,7 @@ const deleteProduct = async (req, res) => {
             payload: result
         });
     } catch (error) {
+        req.logger.warning ('Error en el controlador al eliminar el producto:', error);
         res.status(400).send({
             status: 'error',
             message: error.message

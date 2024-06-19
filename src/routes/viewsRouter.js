@@ -2,7 +2,6 @@
 // src/routes/viewRouter.js
 import { Router } from 'express';
 import viewController from '../controllers/viewController.js';
-import { generateProducts } from "../utils/mockUtil.js";
 
 const router = Router();
 
@@ -20,12 +19,17 @@ router.get("/register", viewController.register);
 
 router.get("/cart/:cid", viewController.isAuthenticated, viewController.getCartView);
 
-router.get("/mockingproducts", (_req, res) => {
-    let products = [];
-    for (let i = 0; i < 100; i++) {
-      products.push(generateProducts());
-    }
-    res.render('mocking', { title: 'Mocking Products', products });
-  });
+router.get("/mockingproducts", viewController.mockProducts);
+
+router.get("/loggerTest", (req, res) => {
+  req.logger.fatal("Logger test fatal message");
+  req.logger.error("Logger test error message");
+  req.logger.warning("Logger test warning message");
+  req.logger.info("Logger test info message");
+  req.logger.http("Logger test http message");
+  req.logger.debug("Logger test debug message");
+
+  res.send("Logger test completed!"); 
+});
 
 export default router;

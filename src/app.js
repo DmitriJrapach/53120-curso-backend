@@ -18,6 +18,7 @@ import dotenv from 'dotenv';
 import { create } from 'express-handlebars';
 import compression from 'express-compression';
 import errors from './middleware/errors/index.js';
+import { addLogger, startLogger } from './utils/loggerUtil.js';
 
 dotenv.config();
 
@@ -76,6 +77,8 @@ app.use(passport.session());
 app.get('/', (req, res) => {
     res.redirect('/login');
 });
+
+app.use(addLogger);
 
 // Routers
 app.use('/api/sessions', userRouter);
