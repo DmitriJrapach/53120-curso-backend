@@ -90,6 +90,31 @@ const logout = (req, res) => {
     });
 };
 
+const requestPasswordReset = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const response = await userService.requestPasswordReset(email);
+        res.send(response.message);
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+};
+
+const resetPassword = async (req, res) => {
+    try {
+        const { token, newPassword } = req.body;
+        console.log('Datos recibidos en userController.resetPassword:', { token, newPassword });
+
+        const response = await userService.resetPassword(token, newPassword);
+        console.log('Respuesta de userService.resetPassword:', response);
+
+        res.send(response.message);
+    } catch (error) {
+        console.log('Error en userController.resetPassword:', error.message);
+        res.status(400).send(error.message);
+    }
+};
+
 export default {
     githubAuth,
     githubCallback,
@@ -97,5 +122,7 @@ export default {
     login,
     current,
     getUser,
-    logout
+    logout,
+    requestPasswordReset,
+    resetPassword
 };

@@ -7,7 +7,7 @@ const getAllProducts = async (req, res) => {
         const { limit, page, ...query } = req.query;
         const products = await productService.getAllProducts(limit, page, query);
 
-        res.render('viewProduct', {
+        res.render('viewProducts', {
             products: products.docs,
             user: user,
             isValid: products.docs.length > 0,
@@ -42,30 +42,37 @@ const getProductByID = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
+  console.log('Request body in controller before processing:', req.body);
+  console.log('Request files in controller before processing:', req.files);
+  if (req.files) {
+    req.body.thumbnails = [];
+    req.files.forEach((file) => {
+      req.body.thumbnails.push(file.filename);
+    });
+  }
+  // Agregar el owner basado en el rol del usuario
+  if (req.session.user.role === 'premium') {
+    req.body.owner = req.session.user._id; // Asignar el ID del usuario premium como owner
+  } else {
+    req.body.owner = 'admin'; // Establecer owner como admin por defecto
+  }
 
-    console.log('Request body in controller before processing:', req.body);
-    console.log('Request files in controller before processing:', req.files);
-    if (req.files) {
-        req.body.thumbnails = [];
-        req.files.forEach((file) => {
-            req.body.thumbnails.push(file.filename);
-        });
-    }
-
-    try {
-        const result = await productService.createProduct(req.body);
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        req.logger.warning ('Error en el controlador al crear el producto:', error);
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
+  try {
+    const user = req.session.user; // Obtener el usuario de la sesión
+    const result = await productService.createProduct(req.body, user);
+    res.send({
+      status: 'success',
+      payload: result
+    });
+  } catch (error) {
+    req.logger.warning('Error en el controlador al crear el producto:', error);
+    res.status(400).send({
+      status: 'error',
+      message: error.message
+    });
+  }
 };
+
 
 const updateProduct = async (req, res) => {
     if (req.files) {

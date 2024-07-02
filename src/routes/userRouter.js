@@ -20,4 +20,10 @@ router.get('/:uid', passportCall('jwt'), isAdmin, userController.getUser);
 
 router.post("/logout", userController.logout);
 
+// Endpoint para manejar la solicitud de recuperación de contraseña
+router.post('/forgot-password', userController.requestPasswordReset);
+
+// Endpoint para manejar la actualización de la contraseña
+router.post('/reset-password', userController.resetPassword);
+
 export default router;

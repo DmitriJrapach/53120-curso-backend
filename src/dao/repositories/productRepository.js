@@ -34,8 +34,14 @@ class ProductRepository {
     }
   }
 
-  async createProduct(product) {
+  async createProduct(product, user) {
     try {
+      // Asignar el owner adecuado
+      if (user && user.role === 'premium') {
+        product.owner = user._id; // Asignar el ID del usuario premium como owner
+      } else {
+        product.owner = null; // El owner será admin (null en el esquema)
+      }
       const result = await productModel.create(product);
       return result;
     } catch (error) {

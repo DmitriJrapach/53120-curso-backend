@@ -146,7 +146,23 @@ const mockProducts = (_req, res) => {
     for (let i = 0; i < 100; i++) {
       products.push(generateProducts());
     }
-    res.render('mocking', { title: 'Mocking Products', products });
+    res.render('mocking', { title: 'Mocking Products', products, style: 'index.css'});
+};
+
+const forgotPassword = (req, res) => {
+    res.render('request-reset', {
+        title: "Olvide Contraseña",
+        style: "index.css"
+    });
+};
+
+const getResetPassword = (req, res) => {
+    const { token } = req.params;
+    res.render('reset-password', {
+        token,
+        title: "Reset Password",
+        style: "index.css"
+    });
 };
 
 export default {
@@ -158,5 +174,7 @@ export default {
     logout,
     register,
     getCartView,
-    mockProducts
+    mockProducts,
+    forgotPassword,
+    getResetPassword
 };

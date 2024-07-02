@@ -25,9 +25,9 @@ class UserRepository {
             if ('githubId' in userData) {
                 delete userData.githubId;
             }
-            console.log('Datos recibidos en UserRepository.createUser:', userData);
+            // console.log('Datos recibidos en UserRepository.createUser:', userData);
             const newUser = await userModel.create(userData);
-            console.log('Usuario creado en UserRepository.createUser:', newUser);
+            // console.log('Usuario creado en UserRepository.createUser:', newUser);
             return newUser;
         } catch (error) {
             console.error('Error en UserRepository.createUser:', error.message);
@@ -49,6 +49,17 @@ class UserRepository {
             return await userModel.findByIdAndDelete(id).lean();
         } catch (error) {
             throw new Error("Error al eliminar el usuario");
+        }
+    }
+
+     // Implementar la función updateUserPassword
+     async updateUserPassword(userId, hashedPassword) {
+        try {
+            // Actualizar solo el campo de contraseña
+            return await userModel.findByIdAndUpdate(userId, { password: hashedPassword }, { new: true }).lean();
+        } catch (error) {
+            console.error('Error en UserRepository.updateUserPassword:', error.message);
+            throw new Error('Error al actualizar la contraseña del usuario');
         }
     }
 

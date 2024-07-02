@@ -37,7 +37,12 @@ const productSchema = mongoose.Schema({
         type: Array,
         require: false,
         default: []
-    }
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        default: null // Si no hay owner, será null y se manejará como 'admin'
+      }
 });
 
 productSchema.plugin(mongoosePaginate)

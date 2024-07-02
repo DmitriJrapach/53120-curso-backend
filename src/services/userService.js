@@ -30,8 +30,26 @@ const getUser = async (uid) => {
     }
 };
 
+const requestPasswordReset = async (email) => {
+    try {
+        return await userManager.requestPasswordReset(email);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+const resetPassword = async (token, newPassword) => {
+    try {
+        return await userManager.resetPassword(token, newPassword);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 export default {
     addUser,
     loginUser,
-    getUser
+    getUser,
+    requestPasswordReset,
+    resetPassword
 };

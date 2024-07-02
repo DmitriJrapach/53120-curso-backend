@@ -32,4 +32,10 @@ router.get("/loggerTest", (req, res) => {
   res.send("Logger test completed!"); 
 });
 
+// Ruta para renderizar la vista de solicitud de email para la recuperación de contraseña
+router.get('/forgot-password', viewController.forgotPassword);
+
+// Ruta para validar el token y renderizar la vista de restablecimiento de contraseña
+router.get('/reset-password/:token', viewController.getResetPassword);
+
 export default router;

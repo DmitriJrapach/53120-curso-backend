@@ -19,9 +19,9 @@ const getProductById = async (pid) => {
   }
 };
 
-const createProduct = async (productData) => {
+const createProduct = async (productData, user) => {
   try {
-    return await productRepository.createProduct(productData);
+    return await productRepository.createProduct(productData, user);
   } catch (error) {
     throw new Error(error.message);
   }

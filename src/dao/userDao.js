@@ -2,6 +2,7 @@ import UserRepository from "./repositories/userRepository.js";
 import { isValidPassword, createHash } from "../utils/functionsUtils.js";
 import jwt from "jsonwebtoken";
 import cartModel from "./models/cartModel.js"; // Importar el modelo de carrito
+import sendMail from "../utils/sendMail.js";
 
 class UserManager {
     constructor() {
@@ -67,6 +68,61 @@ class UserManager {
             return await this.userRepository.findById(uid);
         } catch (error) {
             throw new Error("Error al obtener el usuario");
+        }
+    }
+
+    async requestPasswordReset(email) {
+        try {
+            const user = await this.userRepository.findByEmail(email);
+            if (!user) {
+                throw new Error('No se encontró un usuario con ese email.');
+            }
+
+            // Generar token JWT con duración de 1 hora
+            console.log('JWT_SECRET:', process.env.JWT_SECRET); // Log para verificar el valor
+            const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+            // Enviar el correo con el token
+            const resetLink = `http://localhost:8080/reset-password/${token}`;
+            await sendMail(user.email, 'Recuperación de contraseña', `Haz clic en el siguiente enlace para restablecer tu contraseña: ${resetLink}`);
+
+            return { message: 'Se ha enviado un enlace de recuperación a tu correo electrónico.' };
+        } catch (error) {
+            console.error('Error en UserManager.requestPasswordReset:', error.message);
+            throw new Error('Error al solicitar la recuperación de la contraseña.');
+        }
+    }
+
+    async resetPassword(token, newPassword) {
+        try {
+            // Decodificar el token para obtener el userId
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            console.log('Token decodificado:', decoded);
+
+            // Obtener los datos actuales del usuario
+            const user = await this.userRepository.findById(decoded.userId);
+            if (!user) {
+                throw new Error('Usuario no encontrado');
+            }
+
+            // Comparar la nueva contraseña con la actual
+            const isSamePassword = isValidPassword(user, newPassword);
+            if (isSamePassword) {
+                throw new Error('La nueva contraseña no puede ser igual a la actual');
+            }
+
+            // Hashear la nueva contraseña
+            console.log('Nueva contraseña antes de hashear:', newPassword);
+            const hashedPassword = createHash(newPassword);
+            console.log('Contraseña hasheada:', hashedPassword);
+
+            // Actualizar la contraseña en la base de datos
+            await this.userRepository.updateUserPassword(decoded.userId, hashedPassword);
+
+            return { message: 'Contraseña actualizada con éxito.' };
+        } catch (error) {
+            console.error('Error en UserManager.resetPassword:', error.message);
+            throw new Error('Error al restablecer la contraseña. El token es inválido o ha expirado.');
         }
     }
 }
