@@ -4,7 +4,7 @@ import { Router } from 'express';
 import { uploader } from '../utils/multerUtil.js';
 import productController from '../controllers/productController.js';
 import { passportCall } from "../utils/authUtil.js";
-import isAdminOrOwner from "../middleware/adminMiddleware.js"
+import isAdminOrOwner from "../middleware/adminOrPremiumMiddleware.js"
 
 const router = Router();
 

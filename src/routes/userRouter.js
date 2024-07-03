@@ -10,13 +10,17 @@ router.get("/github", passport.authenticate('github', { scope: ['user:email'] })
 
 router.get("/githubcallback", passport.authenticate('github', { failureRedirect: '/login' }), userController.githubCallback);
 
-router.post("/register", userController.register);
-
-router.post('/login', userController.login);
+router.get('/admin/users', passportCall('jwt'), isAdmin, userController.getAllUsers);
 
 router.get('/current', passportCall('jwt'), isAdmin, userController.current);
 
 router.get('/:uid', passportCall('jwt'), isAdmin, userController.getUser);
+
+router.post("/register", userController.register);
+
+router.post('/login', userController.login);
+
+router.put('/premium/:uid', passportCall('jwt'), isAdmin, userController.changeUserRole);
 
 router.post("/logout", userController.logout);
 

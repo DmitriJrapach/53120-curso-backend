@@ -1,6 +1,9 @@
 <div class="box">
     <h1>Bienvenido {{#if (eq user.role "admin")}}admin{{else}}usuario{{/if}} {{user.first_name}}</h1>
     <hr>
+    {{#if (eq user.role "admin")}}
+        <a href="/admin/dashboard" class="button">Panel de Administrador</a>
+    {{/if}}
     <h2>Productos</h2>
     <form class="box" method="post" action="/api/sessions/logout">
         <button type="submit" class="button">Logout</button>

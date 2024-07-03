@@ -54,13 +54,19 @@ const createCart = async (req, res) => {
 
 const addProductByID = async (req, res) => {
     try {
-        const result = await cartService.addProductByID(req.params.cid, req.params.pid);
+        // Obtenemos los parámetros del request
+        const { cid, pid } = req.params;
+
+        // Añadimos el producto al carrito
+        const result = await cartService.addProductByID(cid, pid);
+        
+        // Enviamos la respuesta
         res.send({
             status: 'success',
             payload: result
         });
     } catch (error) {
-        req.logger.warning('Error en el controlador al agregar el producto del carrito:', error);
+        req.logger.warning('Error en el controlador al agregar el producto al carrito:', error);
         res.status(400).send({
             status: 'error',
             message: error.message

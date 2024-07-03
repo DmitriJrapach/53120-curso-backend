@@ -2,13 +2,13 @@
 // src/routes/messageRouter.js
 import { Router } from 'express';
 import messageController from '../controllers/messageController.js';
-import isUser from "../middleware/userMiddleware.js"
+import isUserOrPremium from "../middleware/userOrPremiumMiddleware.js"
 
 const router = Router();
 
 router.get('/messages', messageController.getAllMessages);
 
-router.post('/messages', isUser, messageController.insertMessage);
+router.post('/messages', isUserOrPremium, messageController.insertMessage);
 
 router.get('/messages/:id', messageController.getMessageById);
 

@@ -125,6 +125,24 @@ class UserManager {
             throw new Error('Error al restablecer la contraseña. El token es inválido o ha expirado.');
         }
     }
+
+    async updateUserRole(userId, newRole) {
+        try {
+            return await this.userRepository.updateUser(userId, { role: newRole });
+        } catch (error) {
+            console.error('Error en UserManager.updateUserRole:', error.message);
+            throw new Error('Error al actualizar el rol del usuario');
+        }
+    }
+
+    async getAllUsers() {
+        try {
+            return await this.userRepository.findAll();
+        } catch (error) {
+            console.error('Error en UserManager.getAllUsers:', error.message);
+            throw new Error('Error al obtener todos los usuarios');
+        }
+    }
 }
 
 export default UserManager;

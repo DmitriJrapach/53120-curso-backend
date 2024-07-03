@@ -30,6 +30,15 @@ const getUser = async (uid) => {
     }
 };
 
+const getAllUsers = async () => {
+    try {
+        return await userManager.getAllUsers();
+    } catch (error) {
+        console.error('Error en userService.getAllUsers:', error.message);
+        throw new Error('Error al obtener todos los usuarios');
+    }
+};
+
 const requestPasswordReset = async (email) => {
     try {
         return await userManager.requestPasswordReset(email);
@@ -46,10 +55,20 @@ const resetPassword = async (token, newPassword) => {
     }
 };
 
+const updateUserRole = async (userId, newRole) => {
+    try {
+        return await userManager.updateUserRole(userId, newRole);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 export default {
     addUser,
     loginUser,
     getUser,
+    getAllUsers,
     requestPasswordReset,
-    resetPassword
+    resetPassword,
+    updateUserRole
 };

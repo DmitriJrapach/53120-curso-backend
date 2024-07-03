@@ -63,6 +63,14 @@ class UserRepository {
         }
     }
 
+    async findAll() {
+        try {
+            return await userModel.find({}).lean();
+        } catch (error) {
+            throw new Error('Error al obtener todos los usuarios');
+        }
+    }
+
 }
 
 export default UserRepository;

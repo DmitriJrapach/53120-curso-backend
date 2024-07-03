@@ -165,6 +165,13 @@ const getResetPassword = (req, res) => {
     });
 };
 
+const adminDashboard = (req, res) => {
+    res.render('adminDashboard', {
+        title: 'Admin Dashboard',
+        style: 'index.css'
+    });
+};
+
 export default {
     isAuthenticated,
     getProducts,
@@ -176,5 +183,6 @@ export default {
     getCartView,
     mockProducts,
     forgotPassword,
-    getResetPassword
+    getResetPassword,
+    adminDashboard
 };

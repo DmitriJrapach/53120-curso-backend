@@ -34,7 +34,6 @@ const register = async (req, res) => {
     }
 };
 
-
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -84,6 +83,23 @@ const getUser = async (req, res) => {
     }
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await userService.getAllUsers();
+        res.render('userManager', { 
+            title: 'User Manager',
+            style: 'index.css',
+             users
+            });
+    } catch (error) {
+        req.logger.warning('Error al obtener la lista de usuarios', error);
+        res.status(500).send({
+            status: 'error',
+            message: 'Error al obtener la lista de usuarios'
+        });
+    }
+};
+
 const logout = (req, res) => {
     req.session.destroy(error => {
         res.redirect("/login");
@@ -115,6 +131,26 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const changeUserRole = async (req, res) => {
+    const { uid } = req.params; // ID del usuario
+
+    try {
+        const user = await userService.getUser(uid);
+
+        if (!user) {
+            return res.status(404).send({ status: 'error', message: 'Usuario no encontrado' });
+        }
+
+        user.role = (user.role === 'user') ? 'premium' : 'user';
+        await userService.updateUserRole(user._id, user.role);
+
+        return res.send({ status: 'success', message: `Rol cambiado a ${user.role}` });
+    } catch (error) {
+        console.error('Error al cambiar el rol del usuario:', error);
+        return res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
+    }
+};
+
 export default {
     githubAuth,
     githubCallback,
@@ -122,7 +158,9 @@ export default {
     login,
     current,
     getUser,
+    getAllUsers,
     logout,
     requestPasswordReset,
-    resetPassword
+    resetPassword,
+    changeUserRole
 };
