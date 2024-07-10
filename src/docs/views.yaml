@@ -1,0 +1,92 @@
+openapi: 3.0.1
+info:
+  title: View API
+  description: API for rendering views
+  version: 1.0.0
+paths:
+  /products:
+    get:
+      summary: Retrieve products view
+      responses:
+        '200':
+          description: Render products view
+  /realtimeproducts:
+    get:
+      summary: Retrieve real-time products view
+      responses:
+        '200':
+          description: Render real-time products view
+  /chat:
+    get:
+      summary: Render chat view
+      responses:
+        '200':
+          description: Render chat view
+  /login:
+    get:
+      summary: Render login view
+      responses:
+        '200':
+          description: Render login view
+  /logout:
+    get:
+      summary: Render logout view
+      responses:
+        '200':
+          description: Render logout view
+  /register:
+    get:
+      summary: Render register view
+      responses:
+        '200':
+          description: Render register view
+  /cart/{cid}:
+    get:
+      summary: Render cart view by ID
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: The cart ID
+      responses:
+        '200':
+          description: Render cart view
+  /mockingproducts:
+    get:
+      summary: Render mocking products view
+      responses:
+        '200':
+          description: Render mocking products view
+  /loggerTest:
+    get:
+      summary: Perform logger test
+      responses:
+        '200':
+          description: Logger test completed
+  /forgot-password:
+    get:
+      summary: Render forgot password view
+      responses:
+        '200':
+          description: Render forgot password view
+  /reset-password/{token}:
+    get:
+      summary: Render reset password view
+      parameters:
+        - in: path
+          name: token
+          schema:
+            type: string
+          required: true
+          description: The reset password token
+      responses:
+        '200':
+          description: Render reset password view
+  /admin/dashboard:
+    get:
+      summary: Render admin dashboard view
+      responses:
+        '200':
+          description: Render admin dashboard view

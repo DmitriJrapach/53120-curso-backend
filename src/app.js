@@ -7,6 +7,7 @@ import productRouter from './routes/productRouter.js';
 import cartRouter from './routes/cartRouter.js';
 import viewsRouter from './routes/viewsRouter.js';
 import messageRouter from './routes/messageRouter.js';
+import ticketRouter from './routes/ticketRouter.js';
 import __dirname from './utils/constantsUtil.js';
 import { Server } from 'socket.io';
 import websocket from './websocket.js';
@@ -19,6 +20,8 @@ import { create } from 'express-handlebars';
 import compression from 'express-compression';
 import errors from './middleware/errors/index.js';
 import { addLogger, startLogger } from './utils/loggerUtil.js';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express'
 
 dotenv.config();
 
@@ -78,13 +81,29 @@ app.get('/', (req, res) => {
     res.redirect('/login');
 });
 
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'Documentación de ecommerce',
+            description: 'Esta documentación cubre toda la API habilitada para ecommerce',
+        },
+    },
+    apis: ['./src/docs/**/*.yaml'], // todos los archivos de configuración de rutas estarán aquí
+};
+const specs = swaggerJsdoc(swaggerOptions);
+
+app.use('/api/docs',swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
 app.use(addLogger);
+
 
 // Routers
 app.use('/api/sessions', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/chat', messageRouter);
+app.use('/api/tickets', ticketRouter);
 app.use('/', viewsRouter);
 
 const PORT = 8080;

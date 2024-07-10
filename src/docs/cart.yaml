@@ -1,0 +1,96 @@
+openapi: 3.0.1
+info:
+  title: Cart API
+  description: API for managing shopping carts
+  version: 1.0.0
+paths:
+  /api/carts:
+    get:
+      summary: Retrieve a list of carts
+      responses:
+        '200':
+          description: A list of carts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+    post:
+      summary: Create a new cart
+      responses:
+        '201':
+          description: The created cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+  /api/carts/{cid}:
+    get:
+      summary: Retrieve a cart by ID
+      parameters:
+        - in: path
+          name: cid
+          schema:
+            type: string
+          required: true
+          description: The cart ID
+      responses:
+        '200':
+          description: A single cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+    put:
+      summary: Update a cart
+      responses:
+        '200':
+          description: The updated cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+    delete:
+      summary: Delete a cart
+      responses:
+        '204':
+          description: The cart was deleted
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Add a product to a cart
+      responses:
+        '200':
+          description: The product was added to the cart
+    put:
+      summary: Update the quantity of a product in a cart
+      responses:
+        '200':
+          description: The product quantity was updated
+    delete:
+      summary: Remove a product from a cart
+      responses:
+        '204':
+          description: The product was removed from the cart
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Purchase a cart
+      responses:
+        '200':
+          description: The cart was purchased
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+              quantity:
+                type: integer

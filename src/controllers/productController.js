@@ -7,7 +7,7 @@ const getAllProducts = async (req, res) => {
         const { limit, page, ...query } = req.query;
         const products = await productService.getAllProducts(limit, page, query);
 
-        res.render('viewProducts', {
+        res.render('products', {
             products: products.docs,
             user: user,
             isValid: products.docs.length > 0,
@@ -25,9 +25,9 @@ const getAllProducts = async (req, res) => {
     }
 };
 
-const getProductByID = async (req, res) => {
+const getProductById = async (req, res) => {
     try {
-        const result = await productService.getProductByID(req.params.pid);
+        const result = await productService.getProductById(req.params.pid);
         res.send({
             status: 'success',
             payload: result
@@ -127,7 +127,7 @@ const addProductToCart = async (req, res) => {
 
 export default {
     getAllProducts,
-    getProductByID,
+    getProductById,
     createProduct,
     updateProduct,
     deleteProduct,

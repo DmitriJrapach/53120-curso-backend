@@ -10,7 +10,7 @@ const router = Router();
 
 router.get('/', productController.getAllProducts);
 
-router.get('/:pid', productController.getProductByID);
+router.get('/:pid', productController.getProductById);
 
 router.post('/', uploader.array('thumbnails', 3), isAdminOrOwner, productController.createProduct);
 

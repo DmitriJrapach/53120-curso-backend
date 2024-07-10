@@ -1,0 +1,123 @@
+openapi: 3.0.1
+info:
+  title: Ecommerce API
+  description: API para manejar productos y tickets en una aplicación de ecommerce
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/products:
+    get:
+      summary: Retrieve a list of products
+      responses:
+        '200':
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      summary: Create a new product
+      responses:
+        '201':
+          description: The created product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /api/products/{pid}:
+    get:
+      summary: Retrieve a product by ID
+      parameters:
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: The product ID
+      responses:
+        '200':
+          description: A single product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    put:
+      summary: Update a product
+      responses:
+        '200':
+          description: The updated product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    delete:
+      summary: Delete a product
+      responses:
+        '204':
+          description: The product was deleted
+  /api/tickets:
+    get:
+      summary: Retrieve a list of tickets
+      responses:
+        '200':
+          description: A list of tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ticket'
+    post:
+      summary: Create a new ticket
+      responses:
+        '201':
+          description: The created ticket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        code:
+          type: string
+        price:
+          type: number
+        status:
+          type: boolean
+        stock:
+          type: number
+        category:
+          type: string
+        thumbnails:
+          type: array
+          items:
+            type: string
+        owner:
+          type: string
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        amount:
+          type: number
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        purchaser:
+          type: string
