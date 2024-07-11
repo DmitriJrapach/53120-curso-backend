@@ -737,3 +737,34 @@ http: GET in /realtimeproducts - 16:00:33
 http: GET in /chat - 16:00:44
 http: GET in /login - 16:00:58
 http: GET in /admin/dashboard - 16:01:08
+http: GET in /login - 16:44:50
+http: POST in /api/sessions/login - 16:44:57
+http: GET in /products - 16:44:57
+http: POST in /api/carts/667dd0147f9fedc88db74aac/product/6614374a2066493018690269 - 16:45:00
+http: GET in /cart/667dd0147f9fedc88db74aac - 16:45:02
+http: GET in /products - 16:45:04
+http: GET in /login - 16:53:09
+http: POST in /api/sessions/login - 16:53:15
+http: GET in /products - 16:53:15
+warning: Error en el controlador al obtener los productos: ENOENT: no such file or directory, open 'C:\Users\Dimitri\OneDrive\Desktop\curso backend\data\products.json' {"stack":"Error: ENOENT: no such file or directory, open 'C:\\Users\\Dimitri\\OneDrive\\Desktop\\curso backend\\data\\products.json'\n    at Object.getAllProducts (file:///C:/Users/Dimitri/OneDrive/Desktop/curso%20backend/src/services/productService.js:8:11)\n    at async getProducts (file:///C:/Users/Dimitri/OneDrive/Desktop/curso%20backend/src/controllers/viewController.js:22:24)"}
+http: POST in /api/sessions/login - 16:53:19
+http: GET in /products - 16:53:19
+warning: Error en el controlador al obtener los productos: ENOENT: no such file or directory, open 'C:\Users\Dimitri\OneDrive\Desktop\curso backend\data\products.json' {"stack":"Error: ENOENT: no such file or directory, open 'C:\\Users\\Dimitri\\OneDrive\\Desktop\\curso backend\\data\\products.json'\n    at Object.getAllProducts (file:///C:/Users/Dimitri/OneDrive/Desktop/curso%20backend/src/services/productService.js:8:11)\n    at async getProducts (file:///C:/Users/Dimitri/OneDrive/Desktop/curso%20backend/src/controllers/viewController.js:22:24)"}
+http: GET in /login - 16:58:47
+http: GET in /products - 16:58:51
+http: POST in /api/sessions/login - 16:58:54
+http: GET in /products - 16:58:55
+http: GET in /login - 16:18:15
+http: GET in /favicon.ico - 16:18:15
+http: POST in /api/sessions/login - 16:18:19
+warning: Error en el controlador al logearse: Credenciales inválidas! {"stack":"Error: Credenciales inválidas!\n    at Object.loginUser (file:///C:/Users/Dimitri/OneDrive/Desktop/curso%20backend/src/services/userService.js:21:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async login (file:///C:/Users/Dimitri/OneDrive/Desktop/curso%20backend/src/controllers/userController.js:40:22)"}
+http: GET in /login - 16:18:19
+http: POST in /api/sessions/login - 16:18:23
+http: GET in /products - 16:18:23
+http: GET in /products?sort={%22price%22:-1} - 16:18:32
+http: GET in /products?sort={%22price%22:1} - 16:18:33
+http: GET in /cart/665cfba1ff5b8311141253e2 - 16:18:35
+http: GET in /products - 16:18:37
+http: GET in /login - 16:22:54
+http: POST in /api/sessions/login - 16:22:59
+http: GET in /products - 16:22:59

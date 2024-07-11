@@ -3,6 +3,11 @@ import ProductRepository from '../dao/repositories/productRepository.js';
 
 const productRepository = new ProductRepository();
 
+//Patron factory con fs
+// import ProductRepository from '../dao/repositories/productRepository.js';
+
+// const productRepository = new ProductRepository();
+
 const getAllProducts = async (limit = 10, page = 1, query = {}, sort = {}) => {
   try {
     return await productRepository.getAllProducts(limit, page, query, sort);
