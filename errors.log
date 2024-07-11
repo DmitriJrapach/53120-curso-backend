@@ -768,3 +768,6 @@ http: GET in /products - 16:18:37
 http: GET in /login - 16:22:54
 http: POST in /api/sessions/login - 16:22:59
 http: GET in /products - 16:22:59
+http: GET in /login - 16:34:16
+http: POST in /api/sessions/login - 16:34:21
+http: GET in /products - 16:34:21
