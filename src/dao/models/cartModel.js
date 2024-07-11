@@ -8,18 +8,19 @@ const cartSchema = new mongoose.Schema({
         type: [{
             product: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "Product" // Referencia al modelo de productos
+                ref: "products" // Referencia al modelo de productos
             },
             quantity: {
                 type: Number,
                 default: 1
             }
         }],
-        default: [] // Definir como un array vacío por defecto
+        default: [], // Definir como un array vacío por defecto
+        _id: false
     }
 });
 
-cartSchema.plugin(mongoosePaginate)
+cartSchema.plugin(mongoosePaginate);
 
-export const cartModel = mongoose.model(cartCollection, cartSchema);
+const cartModel = mongoose.model(cartCollection, cartSchema);
 export default cartModel;

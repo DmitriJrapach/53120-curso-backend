@@ -1,12 +1,15 @@
 <div class="box">
-    <h1>Bienvenido {{#if user.admin}}admin{{else}}usuario{{/if}} {{user.first_name}}</h1>  
+    <h1>Bienvenido {{#if (eq user.role "admin")}}admin{{else}}usuario{{/if}} {{user.first_name}}</h1>
     <hr>
+    {{#if (eq user.role "admin")}}
+        <a href="/admin/dashboard" class="button">Panel de Administrador</a>
+    {{/if}}
     <h2>Productos</h2>
-    <form class="box" method="post" action="http://localhost:8080/api/sessions/logout">
+    <form class="box" method="post" action="/api/sessions/logout">
         <button type="submit" class="button">Logout</button>
     </form>
     
-    <form class="box"  id="search-form-category">
+    <form class="box" id="search-form-category">
         <label for="category">Categoría:</label>
         <input type="text" id="category" name="category">
         <button type="submit">Buscar por Categoría</button>
@@ -19,37 +22,56 @@
         </select>
         <button type="submit">Buscar por Disponibilidad</button>
     </form>    
-        <a href="http://localhost:8080/products?sort={%22price%22:1}" class="button">
-          Ordenar por Precio Ascendente    
-        <a href="http://localhost:8080/products?sort={%22price%22:-1}" class="button">
-          Ordenar por Precio Descendente
-        </a>     
+    <a href="/products?sort={%22price%22:1}" class="button">
+        Ordenar por Precio Ascendente    
+    </a>
+    <a href="/products?sort={%22price%22:-1}" class="button">
+        Ordenar por Precio Descendente
+    </a>      
     {{#if isValid}}
         <div class="products-box">
             {{#each products}}
-               <div class="product-card">
-                <h3>{{this.title}}</h3>
-                <hr>
-                <p>Categoria: {{this.category}}</p>
-                <p>Descripción: {{this.description}}</p>
-                <p>Precio: $ {{this.price}}</p>
-            </div>
-               <br>
+                <div class="product-card">
+                    <h3>{{this.title}}</h3>
+                    <hr>
+                    <p>Categoría: {{this.category}}</p>
+                    <p>Descripción: {{this.description}}</p>
+                    <p>Precio: $ {{this.price}}</p>
+                    <form class="add-to-cart-form" data-product-id="{{this._id}}" data-cart-id="{{../user.cartId}}">
+                        <button type="submit" class="button">Agregar al carrito</button>
+                    </form>
+                </div>
+                <br>
             {{/each}}
         </div>
         <hr>
         <div>
             {{#if hasPrevPage}}
-                <a href="{{this.prevLink}}" class="button"><< Anterior</a>
+                <a href="{{prevLink}}" class="button"><< Anterior</a>
             {{/if}}
         </div>
         <br>
         <div>
             {{#if hasNextPage}}
-                <a href="{{this.nextLink}}" class="button">Siguiente >></a>
+                <a href="{{nextLink}}" class="button">Siguiente >></a>
             {{/if}}
         </div>
+        <script>
+            console.log("ID del carrito:", "{{../user.cartId}}");
+        </script>
     {{else}}
-       <h2>No hay productos para mostrar</h2>
+        <h2>No hay productos para mostrar</h2>
     {{/if}}
+    <hr>
+    <a href="/cart/{{user.cartId}}" class="button">Ver Carrito</a>
 </div>
+
+<div id="message" style="display:none;">Producto agregado!</div>
+
+<!-- Incluir el archivo JavaScript -->
+<script src="/js/product.js"></script>
+{{#if message}}
+    <script type="text/javascript">
+        alert('{{message}}');
+    </script>
+{{/if}}

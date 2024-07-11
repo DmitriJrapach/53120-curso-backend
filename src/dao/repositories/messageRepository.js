@@ -1,6 +1,9 @@
-import messageModel from "../dao/models/messageModel.js";
 
-class messageManagerDB {
+// src/repositories/messageRepository.js
+
+import messageModel from "../models/messageModel.js";
+
+class MessageRepository {
   async getAllMessages() {
     try {
       const messages = await messageModel.find();
@@ -62,4 +65,4 @@ class messageManagerDB {
   }
 }
 
-export { messageManagerDB };
+export default MessageRepository;

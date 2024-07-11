@@ -1,0 +1,25 @@
+[
+    {
+      "title": "Product 1",
+      "description": "Description of Product 1",
+      "code": "P001",
+      "price": 100,
+      "status": true,
+      "stock": 50,
+      "category": "Category 1",
+      "thumbnails": [],
+      "owner": null
+    },
+    {
+      "title": "Product 2",
+      "description": "Description of Product 2",
+      "code": "P002",
+      "price": 150,
+      "status": true,
+      "stock": 30,
+      "category": "Category 2",
+      "thumbnails": [],
+      "owner": null
+    }
+  ]
+  

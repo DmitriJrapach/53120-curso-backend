@@ -1,4 +1,3 @@
-
 import express from 'express';
 import handlebars from 'express-handlebars';
 import session from 'express-session';
@@ -7,17 +6,29 @@ import userRouter from './routes/userRouter.js';
 import productRouter from './routes/productRouter.js';
 import cartRouter from './routes/cartRouter.js';
 import viewsRouter from './routes/viewsRouter.js';
-import messageRouter from './routes/messageRouter.js'
+import messageRouter from './routes/messageRouter.js';
+import ticketRouter from './routes/ticketRouter.js';
 import __dirname from './utils/constantsUtil.js';
-import {Server} from 'socket.io';
+import { Server } from 'socket.io';
 import websocket from './websocket.js';
 import mongoose from "mongoose";
 import passport from 'passport';
-import initializatePassport from './config/passportConfig.js';
+import cookieParser from 'cookie-parser';
+import initializePassport from './config/passportConfig.js';
+import dotenv from 'dotenv';
+import { create } from 'express-handlebars';
+import compression from 'express-compression';
+import errors from './middleware/errors/index.js';
+import { addLogger, startLogger } from './utils/loggerUtil.js';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express'
+
+dotenv.config();
+
 const app = express();
 
-//MongoDB conect 
-const uri = "mongodb+srv://dmitri:123@cluster0.u7ei4vo.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0";
+// Conexión a MongoDB
+const uri = process.env.URI;
 
 async function connectToMongoDB() {
     try {
@@ -28,69 +39,72 @@ async function connectToMongoDB() {
     }
 }
 
-// Llamar a la función para establecer la conexión
 connectToMongoDB();
 
-// const conexion = async()=>{
-//     try{
-//         //en este caso la conexion es a mi bbdd Mongodb local
-//           await mongoose.connect("mongodb://127.0.0.1:27017", {dbName: "usuarios"})     
-//         console.log("conectado a la bbdd en mongo Compas")
-//     }catch(error){
-//         console.log("fallo conexion")
-//     }
-// }
+// Configuración de Handlebars
+const hbs = create({
+    helpers: {
+        eq: (a, b) => a === b
+    }
+});
 
 
-// conexion()
-
-// App ID: 889172
-
-// Client ID: Iv1.bf30467e040e4f77
-
-// Client secrets: 968df71058136ac7f84188074390cf84af49f2c2  
-
-//Handlebars Config
-app.engine('handlebars', handlebars.engine());
+// Configuración de Handlebars
+app.engine('handlebars', hbs.engine);
 app.set('views', __dirname + '/../views');
 app.set('view engine', 'handlebars');
 
-//Middlewares
+// Middlewares
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(cookieParser());
+app.use(compression());
+app.use(errors);
 
-//Session Middleware
-app.use(session(
-    {
-        store: mongoStore.create(
-            {
-                mongoUrl: uri,
-                ttl: 3600
-            }
-        ),
-        secret: 'secretPhrase',
-        resave: true,
-        saveUninitialized: true
-    }
-));
+// Middleware de sesión
+app.use(session({
+    store: mongoStore.create({
+        mongoUrl: uri,
+        ttl: 3600
+    }),
+    secret: 'secretPhrase',
+    resave: true,
+    saveUninitialized: true
+}));
 
-initializatePassport();
+initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Routers
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'Documentación de ecommerce',
+            description: 'Esta documentación cubre toda la API habilitada para ecommerce',
+        },
+    },
+    apis: ['./src/docs/**/*.yaml'], // todos los archivos de configuración de rutas estarán aquí
+};
+const specs = swaggerJsdoc(swaggerOptions);
+
+app.use('/api/docs',swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
+app.use(addLogger);
+
+
+// Routers
 app.use('/api/sessions', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/chat', messageRouter);
-app.use('/products', viewsRouter);
-
-// Middleware para redirigir la ruta raíz a la pantalla de login
-app.get('/', (req, res) => {
-    res.redirect('/products/login');
-});
-
+app.use('/api/tickets', ticketRouter);
+app.use('/', viewsRouter);
 
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => {
@@ -100,4 +114,3 @@ const httpServer = app.listen(PORT, () => {
 const io = new Server(httpServer);
 
 websocket(io);
-

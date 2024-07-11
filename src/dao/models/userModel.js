@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const userCollection = "users";
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     first_name: {
         type: String,
         minLength: 3,
@@ -19,7 +19,6 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true
     },
-    
     age: {
         type: Number,
         min: 18,
@@ -27,14 +26,21 @@ const userSchema = mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'user'], 
-        default: 'user' 
+        enum: ['admin', 'user', 'premium'], 
+        default: 'user'
     },
+    
     password: {
         type: String,
         minLength: 5,
-        required: true
+        required: true,
+        hash: true
     },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts", // Referencia al modelo de carritos
+        required: true
+    }
 });
 
 const userModel = mongoose.model(userCollection, userSchema);

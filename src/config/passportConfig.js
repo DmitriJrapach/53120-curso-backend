@@ -1,109 +1,82 @@
-import passport from "passport";
-import local from "passport-local";
-import GitHubStrategy from 'passport-github2';
+import passport from 'passport';
+import { Strategy as GitHubStrategy } from 'passport-github2';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import userModel from '../dao/models/userModel.js';
+import cartModel from '../dao/models/cartModel.js'; // Importar el modelo de carrito
+import { isValidPassword, createHash } from "../utils/functionsUtils.js";
+import UserManager from '../dao/userDao.js';
 
-import userModel from "../dao/models/userModel.js";
-import { createHash, isValidPassword } from "../utils/functionsUtils.js";
-
-const localStrategy = local.Strategy;
-const initializatePassport = () => {
-    passport.use('register', new localStrategy(
-        {
-            passReqToCallback: true,
-            usernameField: 'email'
-        },
-        async (req, username, password, done) => {
-            const { first_name, last_name, email, age, role} = req.body;
-
-            try {
-                let user = await userModel.findOne({ email: username});
-                if (user) {
-                    console.log("User already exist!");
-                    return done(null, false);
-                }
-
-                const newUser = { first_name, last_name, email, age, role, password: createHash(password)}
-                const result = await userModel.create(newUser);
-
-                return done(null, result);
-            } catch (error) {
-                return done(error.message);
-            }
-        }
-    ))
-
-    passport.use('login', new localStrategy(
-        {
-            usernameField: 'email'
-        },
-        async (username, password, done) => {
-            try {
-                const user = await userModel.findOne({ email: username });
-                if (!user) {
-                    const errorMessage = "User does not exist";
-                    console.log(errorMessage);
-                    return done(errorMessage)
-                }
-                
-                if (!isValidPassword(user, password)) {
-                    return done(null, false);
-                }
-
-                return done(null, user);
-            } catch(error) {
-                console.log(error.message);
-                return done(error.message);
-            }
-        }
-    ));
-
-    // passport.serializeUser((user, done) => done(null, user._id));
-
-    // passport.deserializeUser(async (id, done) => {
-    //     const user = await userModel.findById(id);
-    //     done(null, user);
-    // })
-
-    const CLIENT_ID = "Iv1.bf30467e040e4f77";
-    const SECRET_ID = "968df71058136ac7f84188074390cf84af49f2c2";
-
+const initializePassport = () => {
+    // Estrategia JWT
     passport.use(
-        'github',
-        new GitHubStrategy({
-            clientID: CLIENT_ID,
-            clientSecret: SECRET_ID,
-            callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
-        },
-    async (accessToken, refreshToken, profile, done) => {
+        new JwtStrategy({
+            jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+            secretOrKey: "secretKey"
+        }, async (jwt_payload, done) => {
+            try {
+                // console.log("JWT Payload:", jwt_payload);
+                const user = await userModel.findById(jwt_payload._id);
+                if (user) {
+                    return done(null, user);
+                } else {
+                    return done(null, false);
+                }
+            } catch (error) {
+                return done(error, false);
+            }
+        })
+    );
+
+    // Estrategia de GitHub
+    passport.use(new GitHubStrategy({
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL: 'http://localhost:8080/api/sessions/githubcallback'
+    }, async (accessToken, refreshToken, profile, done) => {
         try {
-            console.log(profile); 
-            let user = await userModel.findOne({username: profile._json.login})
-            if(!user) {
-                let newUser = {
-                    username: profile._json.login,
+            const email = `github_${profile.id}@example.com`;
+            let user = await userModel.findOne({ $or: [{ githubId: profile.id }, { email: email }] });
+    
+            if (!user) {
+                const newUser = {
                     first_name: "GitHub",
                     last_name: "Usuario",
                     age: 18,
-                    email: "github_" + profile._json.id + "@example.com",
-                    password: "12345"
-                }
-                let result = await userModel.create(newUser);
-                done(null, result);
+                    email: email,
+                    password: ("12345")
+                };
+    
+                // Aquí utilizamos addUser en lugar de crear directamente el usuario
+                const userManager = new UserManager();
+                let result = await userManager.addUser(newUser);
+                console.log ("add user", result)
+                return done(null, result);
             } else {
-                done(null, user);
+                return done(null, user);
             }
-        } catch(error) {
+        } catch (error) {
             return done(error);
         }
     }));
 
+    // Serialización y deserialización de usuarios
     passport.serializeUser((user, done) => {
-        done(null, user._id);
+        console.log('Serializing user:', user);
+        done(null, user.id);
     });
+
     passport.deserializeUser(async (id, done) => {
-        let user = await userModel.findById(id);
-        done(null, user);
-    });
+        let myUser = await userModel.findById(id);
+        done(null, myUser);
+    })
 }
 
-export default initializatePassport;
+const cookieExtractor = (req) => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.cookies.auth ?? null;
+    }
+    return token;
+}
+
+export default initializePassport;

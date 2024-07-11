@@ -1,120 +1,42 @@
+
+// src/routes/viewRouter.js
 import { Router } from 'express';
-import { productManagerDB } from '../dao/productManagerDB.js';
+import viewController from '../controllers/viewController.js';
+import isAdmin from '../middleware/adminMiddleware.js';
 
 const router = Router();
-const ProductService = new productManagerDB();
 
-router.get("/", async (req, res) => {
-  try {
-    // Obtener los datos del usuario de la sesión
-    const user = req.session.user;
+router.get("/products", viewController.isAuthenticated, viewController.getProducts);
 
-    // Obtener parámetros de búsqueda del query string
-    const { limit = 4, page = 1, category, availability, sort = null } = req.query;
+router.get('/realtimeproducts', viewController.isAuthenticated, viewController.getRealTimeProducts);
 
-    // Construir el objeto de consulta basado en los parámetros de búsqueda
-    let query = {};
-    if (category) {
-      query.category = category;
-    }
-    if (availability !== undefined) {
-      query.status = availability === "true";
-    }
+router.get("/chat", viewController.isAuthenticated, viewController.chat);
 
-    // Obtener los productos que coinciden con la búsqueda
-    const result = await ProductService.getAllProducts(limit, page, query, sort);
-    const isValid = !(page <= 0 || page > result.totalPages);
+router.get("/login", viewController.login);
 
-    // Renderizar la página de productos y pasar los datos del usuario a la plantilla
-    res.render("products", {
-      style: "index.css",
-      status: "success",
-      products: result.docs,
-      totalPages: result.totalPages,
-      prevPage: result.prevPage,
-      nextPage: result.nextPage,
-      page: result.page,
-      hasPrevPage: result.hasPrevPage,
-      hasNextPage: result.hasNextPage,
-      prevLink: result.prevPage ? `http://localhost:8080/products?page=${result.prevPage}` : null,
-      nextLink: result.nextPage ? `http://localhost:8080/products?page=${result.nextPage}` : null,
-      isValid: isValid,
-      user: user // Pasar los datos del usuario a la plantilla
-    });
-  } catch (error) {
-    console.error(error);
-  }
-})
+router.get("/logout", viewController.logout);
 
-router.get("/products", (req, res) => {
-  const user = req.session.user;
-  res.render("products", { user: user });
+router.get("/register", viewController.register);
+
+router.get("/cart/:cid", viewController.isAuthenticated, viewController.getCartView);
+
+router.get("/mockingproducts", viewController.mockProducts);
+
+router.get("/loggerTest", (req, res) => {
+  req.logger.fatal("Logger test fatal message");
+  req.logger.error("Logger test error message");
+  req.logger.warning("Logger test warning message");
+  req.logger.info("Logger test info message");
+  req.logger.http("Logger test http message");
+  req.logger.debug("Logger test debug message");
+
+  res.send("Logger test completed!"); 
 });
 
-router.get('/realtimeproducts', async (req, res) => {
-    try {
-        // Obtener parámetros de búsqueda del query string
-        const { limit = 10, page = 1, category, availability, sort = null } = req.query;
+router.get('/forgot-password', viewController.forgotPassword);
 
-        // Obtener productos con los parámetros de consulta
-        const products = await ProductService.getAllProducts(limit, page, { category, availability }, sort);
-        
-        // Renderizar la vista con los productos
-        res.render('realTimeProducts', {
-            title: 'Productos',
-            style: 'index.css',
-            products: products.docs // Aquí se utiliza la propiedad docs del resultado
-        });
-    } catch (error) {
-        console.error(error);
-        // Manejar el error aquí
-    }
-});
+router.get('/reset-password/:token', viewController.getResetPassword);
 
-router.get("/chat", (req, res) => {
-    res.render(
-        "chat",
-        {
-            title: "Chat usuarios",
-            style: "index.css"
-        }
-    )
-});
-
-router.get("/login", (req, res) => {
-  res.render(
-    "login",
-    {
-      title: "Login",
-      style: "index.css",
-      failLogin: req.session.failLogin ?? false
-    }
-  )
-});
-
-router.get("/logout", (req, res) => {
-  res.render(
-    "login",
-    {
-      title: "Logout",
-      style: "index.css"
-    }
-  )
-})
-
-router.get("/register", (req, res) => {
-  res.render(
-    "register",
-    {
-      title: "Register",
-      style: "index.css",
-      failRegister: req.session.failRegister ?? false
-    }
-  )
-})
-
-
-
-
+router.get('/admin/dashboard', isAdmin, viewController.adminDashboard);
 
 export default router;

@@ -1,0 +1,66 @@
+openapi: 3.0.1
+info:
+  title: Ticket API
+  description: API para manejar tickets
+  version: 1.0.0
+paths:
+  /api/tickets:
+    get:
+      summary: Obtener una lista de tickets
+      responses:
+        '200':
+          description: Lista de tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ticket'
+    post:
+      summary: Crear un nuevo ticket
+      responses:
+        '201':
+          description: Ticket creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+  /api/tickets/{tid}:
+    get:
+      summary: Obtener un ticket por ID
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+          required: true
+          description: ID del ticket
+      responses:
+        '200':
+          description: Ticket único
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+    delete:
+      summary: Eliminar un ticket
+      responses:
+        '204':
+          description: Ticket eliminado
+components:
+  schemas:
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        amount:
+          type: number
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        purchaser:
+          type: string

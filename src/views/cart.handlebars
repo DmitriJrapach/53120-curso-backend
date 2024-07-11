@@ -1,0 +1,29 @@
+<div class="box">
+  <h2>Carrito de {{user.first_name}}</h2>
+  <div class="products-box">
+    {{#each cart.products}}
+      <div class="product-card">
+        <h3>{{this.product.title}}</h3>
+        <hr>
+        <p>Precio: $ {{this.product.price}}</p>
+        <p>Cantidad: {{this.quantity}}</p>
+        <form class="remove-from-cart-form" data-product-id="{{this.product._id}}" data-cart-id="{{../cart._id}}">
+          <button type="submit" class="button">Eliminar del carrito</button>
+        </form>        
+      </div>
+      <br>
+    {{/each}}
+    <div class="box">
+      <a href="/products" class="button">
+        Volver   
+      </a>
+      <button id="finalizar-compra" class="button" data-cart-id="{{cart._id}}">
+        Finalizar la compra
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="message" style="display:none;">Producto eliminado!</div>
+
+<script src="/js/cart.js"></script>

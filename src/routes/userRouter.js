@@ -1,94 +1,33 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import passport from 'passport';
+import userController from '../controllers/userController.js';
+import { passportCall } from "../utils/authUtil.js";
+import isAdmin from "../middleware/adminMiddleware.js"
 
 const router = Router();
 
-// router.post("/register", async (req, res) => {
-//     try {
-//         req.session.failRegister = false;
+router.get("/github", passport.authenticate('github', { scope: ['user:email'] }), userController.githubAuth);
 
-//         if (!req.body.email || !req.body.password) throw new Error("Register error!");
+router.get("/githubcallback", passport.authenticate('github', { failureRedirect: '/login' }), userController.githubCallback);
 
-//         const newUser = {
-//             first_name: req.body.first_name ?? "",
-//             last_name: req.body.last_name ?? "",
-//             email: req.body.email,
-//             age: req.body.age ?? "",
-//             password: createHash(req.body.password)
-//         }
-//         await userModel.create(newUser);
-//         res.redirect("http://localhost:8080/products/login");
-//     } catch (e) {
-//         console.log(e.message);
-//         req.session.failRegister = true;
-//         res.redirect("http://localhost:8080/products/register");
-//     }
-// });
+router.get('/admin/users', passportCall('jwt'), isAdmin, userController.getAllUsers);
 
-// router.post("/login", auth, checkUserRole, async (req, res) => {
-//     try {
-//         return res.redirect("http://localhost:8080/products");
-//     } catch (error) {
-//         console.error('Error during login:', error);
-//         req.session.failLogin = true;
-//         return res.redirect("http://localhost:8080/products/login");
-//     }
-// });
+router.get('/current', passportCall('jwt'), isAdmin, userController.current);
 
-router.get("/github", passport.authenticate('github', {scope: ['user:email']}), (req, res) => {
-    res.send({
-        status: 'success',
-        message: 'Success'
-    });
-});
+router.get('/:uid', passportCall('jwt'), isAdmin, userController.getUser);
 
-router.get("/githubcallback", passport.authenticate('github', {failureRedirect: '/products/login'}), (req, res) => {
-    req.session.user = req.user;
-    res.redirect('/products');
-});
+router.post("/register", userController.register);
 
-router.post(
-    "/register",
-    passport.authenticate("register", { failureRedirect: "/products/register" }),
-    (req, res) => {
-        res.send({
-            status: 'success',
-            message: 'User registered'
-        });
-    }
-);
+router.post('/login', userController.login);
 
+router.put('/premium/:uid', passportCall('jwt'), isAdmin, userController.changeUserRole);
 
-router.post(
-    "/login",
-    passport.authenticate("login", { failureRedirect: "/products/login" }),
-    (req, res) => {
-        if (!req.user) {
-            return res.send(401).send({
-                status: "error",
-                message: "Error Login!"
-            });
-        }
+router.post("/logout", userController.logout);
 
-        req.session.user = {
-            first_name: req.user.first_name,
-            last_name: req.user.last_name,
-            email: req.user.email,
-            age: req.user.age,
-            role: req.user.role
-        }
+// Endpoint para manejar la solicitud de recuperación de contraseña
+router.post('/forgot-password', userController.requestPasswordReset);
 
-        return res.redirect("/products");
-    }
-);
+// Endpoint para manejar la actualización de la contraseña
+router.post('/reset-password', userController.resetPassword);
 
-
-router.post("/logout", (req, res) => {
-    console.log("Se está ejecutando la función de logout");
-    req.session.destroy(error => {
-        res.redirect("http://localhost:8080/products/login");
-        console.log("Usuario desconectado")
-    })
-    
-});
 export default router;

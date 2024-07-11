@@ -1,139 +1,27 @@
-
+// src/routes/cartRouter.js
 import { Router } from 'express';
-import { productManagerDB } from "../dao/productManagerDB.js"
-import { cartManagerDB } from "../dao/cartManagerDB.js"
+import cartController from '../controllers/cartController.js';
+import { passportCall } from "../utils/authUtil.js";
+import isUserOrPremium from '../middleware/userOrPremiumMiddleware.js';
 
 const router = Router();
-const ProductService = new productManagerDB();
-const CartService = new cartManagerDB();
 
-// GET /api/carts/:cid
-router.get('/', async (req, res) => {
-    try {
-        const result = await CartService.getAllCarts();
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-});
+router.get('/', cartController.getAllCarts);
 
-router.get('/:cid', async (req, res) => {
-    try {
-        const result = await CartService.getCartById(req.params.cid);
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-});
+router.get('/:cid', passportCall('jwt'), cartController.getCartById);
 
+router.post('/', cartController.createCart);
 
+router.post('/:cid/product/:pid', passportCall('jwt'), isUserOrPremium, cartController.addProductByID);
 
-// POST /api/carts
-router.post('/', async (req, res) => {
-    try {
-        const result = await CartService.createCart();
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-});
+router.put('/:cid', cartController.updateCart);
 
-// POST /api/carts/:cid/product/:pid
-router.post('/:cid/product/:pid', async (req, res) => {
-    try {
-        const result = await CartService.addProductByID(req.params.cid, req.params.pid);
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-});
+router.put('/:cid/products/:pid', cartController.updateProductQuantity);
 
-// DELETE /api/carts/:cid/products/:pid
-router.delete('/:cid/products/:pid', async (req, res) => {
-    try {
-        const result = await CartService.removeProductByID(req.params.cid, req.params.pid);
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-});
+router.delete('/:cid', cartController.deleteCart);
 
-// PUT /api/carts/:cid
-router.put('/:cid', async (req, res) => {
-    try {
-        const result = await CartService.updateCart(req.params.cid, req.body.products);
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-});
+router.delete('/:cid/products/:pid', passportCall('jwt'), cartController.removeProductByID);
 
-// PUT /api/carts/:cid/products/:pid
-router.put('/:cid/products/:pid', async (req, res) => {
-    try {
-        const result = await CartService.updateProductQuantity(req.params.cid, req.params.pid, req.body.quantity);
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-});
-
-// DELETE /api/carts/:cid
-router.delete('/:cid', async (req, res) => {
-    try {
-        const result = await CartService.deleteCart(req.params.cid);
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-});
+router.post('/:cid/purchase', passportCall('jwt'), cartController.purchaseCart);
 
 export default router;

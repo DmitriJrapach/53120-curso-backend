@@ -11,7 +11,9 @@
     </form>
     <br>
     <span><a href="http://localhost:8080/api/sessions/github" target="_self" class="button">GitHub</a></span>
-    <span><a href="http://localhost:8080/products/register" target="_self" class="button">Register</a></span>
+    <span><a href="http://localhost:8080/register" target="_self" class="button">Register</a></span>
+    <br><br>
+    <span><a href="http://localhost:8080/forgot-password" target="_self" class="button">Olvidé mi contraseña</a></span>
 </div>
 
 {{#if failLogin}}
@@ -19,3 +21,18 @@
         alert('Login Failed!');
     </script>
 {{/if}}
+<script type="text/javascript">
+    // Verificar si hay email y contraseña en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    const password = urlParams.get('password');
+
+    if (email && password) {
+        // Decodificar y llenar los campos de entrada
+        document.getElementById('email').value = decodeURIComponent(email);
+        document.getElementById('password').value = decodeURIComponent(password);
+
+        // Mostrar una alerta con las credenciales provisionales
+        alert(`Su usuario y password provisorios son:\nEmail: ${decodeURIComponent(email)}\nPassword: ${decodeURIComponent(password)}`);
+    }
+</script>

@@ -1,0 +1,72 @@
+openapi: 3.0.1
+info:
+  title: Message API
+  description: API for managing messages
+  version: 1.0.0
+paths:
+  /api/chat/messages:
+    get:
+      summary: Retrieve a list of messages
+      responses:
+        '200':
+          description: A list of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+    post:
+      summary: Create a new message
+      responses:
+        '201':
+          description: The created message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+  /api/chat/messages/{id}:
+    get:
+      summary: Retrieve a message by ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The message ID
+      responses:
+        '200':
+          description: A single message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    put:
+      summary: Update a message
+      responses:
+        '200':
+          description: The updated message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+    delete:
+      summary: Delete a message
+      responses:
+        '204':
+          description: The message was deleted
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        sender:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
