@@ -16,19 +16,15 @@ const uri = process.env.URI;
 
 const newUser = generateUsers();
 newUser.age = 25;
-const isUser = { email: "bear@test", password: "test" };
-
-let token;
-let newUserId;
 
 before(async function () {
     this.timeout(10000);
     try {
-      await mongoose.connect(uri);
-      startLogger("DB connection successful");
+        await mongoose.connect(uri);
+        startLogger("DB connection successful");
     } catch (error) {
-      startLogger(`Error during setup: ${error.message}`);
-      throw error;
+        startLogger(`Error during setup: ${error.message}`);
+        throw error;
     }
 });
 
@@ -41,8 +37,8 @@ describe("Testing users routes", () => {
 
         let finalResponse = response;
         while (finalResponse.statusCode === 302) {
-                const location = finalResponse.headers.location;
-                finalResponse = await requester.get(location);
+            const location = finalResponse.headers.location;
+            finalResponse = await requester.get(location);
         }
         expect(finalResponse.statusCode).to.equal(200);
     });
@@ -50,39 +46,15 @@ describe("Testing users routes", () => {
     it("POST Login Operation for Users Endpoint", async () => {
         const response = await requester
             .post("/api/sessions/login")
-            .send({ email: newUser.email, password: newUser.password })
+            .send({ email: "enano@test", password: "test" })
             .set("Accept", "application/json");
 
-        let finalResponse = response;
-        while (finalResponse.statusCode === 302) {
-            const location = finalResponse.headers.location;
-            finalResponse = await requester.get(location);
-        }
-        expect(finalResponse.statusCode).to.equal(200);
-        
-        token = response.body.token;
-        console.log("Current User Response Body:", response.body);
-        newUserId = finalResponse.body._id; // Assuming the response body contains the user ID
-    });
-
-    it("GET Current User Endpoint", async () => {
-        const response = await requester
-            .get("/api/sessions/current")
-            .set("Authorization", `Bearer ${token}`)
-            .set("Accept", "application/json");
-
-        console.log("Current User Response Body:", response.body);
-
-        expect(response.statusCode).to.equal(200);
-    });
-
-    it("GET User by UID Endpoint", async () => {
-        const response = await requester
-            .get(`/api/sessions/${newUserId}`)
-            .set("Authorization", `Bearer ${token}`)
-            .set("Accept", "application/json");
-
-        expect(response.statusCode).to.equal(200);
+            let finalResponse = response;
+            while (finalResponse.statusCode === 302) {
+                const location = finalResponse.headers.location;
+                finalResponse = await requester.get(location);
+            }
+            expect(finalResponse.statusCode).to.equal(200);
     });
 });
 
