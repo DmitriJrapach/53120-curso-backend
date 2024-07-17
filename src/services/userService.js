@@ -5,7 +5,6 @@ const userManager = new UserManager();
 
 const addUser = async (userData) => {
     try {
-        console.log('Datos recibidos en userService.addUser:', userData);
         return await userManager.addUser(userData);
     } catch (error) {
         console.error('Error en userService.addUser:', error.message);

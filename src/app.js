@@ -114,3 +114,4 @@ const httpServer = app.listen(PORT, () => {
 const io = new Server(httpServer);
 
 websocket(io);
+export default app;

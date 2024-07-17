@@ -3,6 +3,10 @@ import { isValidPassword, createHash } from "../utils/functionsUtils.js";
 import jwt from "jsonwebtoken";
 import cartModel from "./models/cartModel.js"; // Importar el modelo de carrito
 import sendMail from "../utils/sendMail.js";
+import * as dotenv from "dotenv";
+dotenv.config();
+
+const secretKey = process.env.JWT_SECRET;
 
 class UserManager {
     constructor() {
@@ -10,7 +14,6 @@ class UserManager {
     }
 
     async addUser({ first_name, last_name, email, age, password }) {
-        console.log('Datos recibidos en UserManager.addUser:', { first_name, last_name, email, age, password });
         if (!first_name || !last_name || !email || !age || !password) {
             throw new Error('Todos los campos de usuario son obligatorios!');
         }
@@ -50,11 +53,14 @@ class UserManager {
         }
         try {
             const user = await this.userRepository.findByEmail(email);
+            console.log("Usuario encontrado:", user);
             if (!user) throw new Error('Usuario inválido!');
             if (isValidPassword(user, password)) {
-                const token = jwt.sign(user, "secretKey", { expiresIn: "1h" });
+                const token = jwt.sign(user, secretKey, { expiresIn: "1h" });
+                console.log("Token generado:", token); 
                 user.token = token;
                 return user;
+                
             } else {
                 throw new Error("Contraseña inválida!");
             }

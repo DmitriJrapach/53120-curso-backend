@@ -2,16 +2,18 @@ import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import userModel from '../dao/models/userModel.js';
-import cartModel from '../dao/models/cartModel.js'; // Importar el modelo de carrito
-import { isValidPassword, createHash } from "../utils/functionsUtils.js";
 import UserManager from '../dao/userDao.js';
+import * as dotenv from "dotenv";
+dotenv.config();
+
+const secretKey = process.env.JWT_SECRET;
 
 const initializePassport = () => {
     // Estrategia JWT
     passport.use(
         new JwtStrategy({
-            jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-            secretOrKey: "secretKey"
+            jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor], ExtractJwt.fromAuthHeaderAsBearerToken()),
+            secretOrKey: secretKey
         }, async (jwt_payload, done) => {
             try {
                 // console.log("JWT Payload:", jwt_payload);

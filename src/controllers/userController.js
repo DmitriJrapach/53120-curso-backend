@@ -22,7 +22,6 @@ const githubCallback = (req, res) => {
 const register = async (req, res) => {
     try {
         const { first_name, last_name, email, age, password } = req.body;
-        console.log('Datos recibidos para registrar:', { first_name, last_name, email, age, password });
         const result = await userService.addUser({ first_name, last_name, email, age, password });
         res.redirect('/login');
     } catch (error) {

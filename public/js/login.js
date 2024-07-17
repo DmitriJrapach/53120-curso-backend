@@ -17,6 +17,7 @@ loginForm.addEventListener('submit', async (event) => {
 
         const result = await response.json();
         if (result.status === 'success') {
+            localStorage.setItem('token', data.token);
             // Redirigir al usuario a la página de productos
             window.location.href = '/products';
         } else {
