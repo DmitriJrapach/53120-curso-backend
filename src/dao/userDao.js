@@ -1,7 +1,7 @@
 import UserRepository from "./repositories/userRepository.js";
 import { isValidPassword, createHash } from "../utils/functionsUtils.js";
 import jwt from "jsonwebtoken";
-import cartModel from "./models/cartModel.js"; // Importar el modelo de carrito
+import cartModel from "./models/cartModel.js";
 import sendMail from "../utils/sendMail.js";
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -23,10 +23,8 @@ class UserManager {
             if (existingUser) {
                 throw new Error('El usuario ya existe');
             }
-
             // Crear un carrito para el nuevo usuario
             const newCart = await cartModel.create({});
-            console.log('Nuevo carrito creado:', newCart);
 
             // Crear el nuevo usuario con el carrito asignado
             const newUser = await this.userRepository.createUser({ 
@@ -37,8 +35,6 @@ class UserManager {
                 password: hashedPassword, 
                 cart: newCart._id 
             });
-            console.log('Nuevo usuario creado:', newUser);
-
             return newUser;
         } catch (error) {
             console.error('Error en UserManager.addUser:', error.message);
@@ -53,11 +49,10 @@ class UserManager {
         }
         try {
             const user = await this.userRepository.findByEmail(email);
-            console.log("Usuario encontrado:", user);
             if (!user) throw new Error('Usuario inválido!');
             if (isValidPassword(user, password)) {
                 const token = jwt.sign(user, secretKey, { expiresIn: "1h" });
-                console.log("Token generado:", token); 
+                // console.log("Token generado:", token); 
                 user.token = token;
                 return user;
                 
@@ -68,7 +63,24 @@ class UserManager {
             throw new Error("Error de inicio de sesión!");
         }
     }
-
+    async updateLastConnection(userId) {
+        try {
+            const user = await this.userRepository.findById(userId);
+            if (!user) throw new Error('Usuario no encontrado');
+            user.last_connection = new Date();
+            await user.save();
+            return user;
+        } catch (error) {
+            throw new Error('Error al actualizar la última conexión: ' + error.message);
+        }
+    }
+    async getUserByEmail(email) {
+        try {
+            return await this.userRepository.findByEmail(email);
+        } catch (error) {
+            throw new Error('Error al obtener el usuario por email');
+        }
+    }
     async getUser(uid) {
         try {
             return await this.userRepository.findById(uid);
@@ -84,8 +96,6 @@ class UserManager {
                 throw new Error('No se encontró un usuario con ese email.');
             }
 
-            // Generar token JWT con duración de 1 hora
-            console.log('JWT_SECRET:', process.env.JWT_SECRET); // Log para verificar el valor
             const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
             // Enviar el correo con el token
@@ -103,7 +113,6 @@ class UserManager {
         try {
             // Decodificar el token para obtener el userId
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            console.log('Token decodificado:', decoded);
 
             // Obtener los datos actuales del usuario
             const user = await this.userRepository.findById(decoded.userId);
@@ -118,10 +127,8 @@ class UserManager {
             }
 
             // Hashear la nueva contraseña
-            console.log('Nueva contraseña antes de hashear:', newPassword);
             const hashedPassword = createHash(newPassword);
-            console.log('Contraseña hasheada:', hashedPassword);
-
+            
             // Actualizar la contraseña en la base de datos
             await this.userRepository.updateUserPassword(decoded.userId, hashedPassword);
 

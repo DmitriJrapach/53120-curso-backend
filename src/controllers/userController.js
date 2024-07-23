@@ -1,5 +1,4 @@
 // src/controllers/userController.js
-import userModel from '../dao/models/userModel.js';
 import userService from '../services/userService.js';
 import { userDTO } from '../dto/userDTO.js';
 
@@ -23,9 +22,10 @@ const register = async (req, res) => {
     try {
         const { first_name, last_name, email, age, password } = req.body;
         const result = await userService.addUser({ first_name, last_name, email, age, password });
+        req.logger.info(`Usuario registrado: ${email}`);
         res.redirect('/login');
     } catch (error) {
-        req.logger.warning ('Error en el controlador al registarr usuario:', error);
+        req.logger.warning('Error en el controlador al registrar usuario:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -50,10 +50,10 @@ const login = async (req, res) => {
             cartId: user.cart._id.toString()
         };
 
-        console.log('Usuario guardado en la sesión con cartId:', req.session.user);
+        req.logger.info(`Usuario logueado: ${email}`);
         res.redirect('/products');
     } catch (error) {
-        req.logger.warning ('Error en el controlador al logearse:', error);
+        req.logger.warning('Error en el controlador al loguearse:', error);
         res.redirect('/login');
     }
 };
@@ -74,7 +74,7 @@ const getUser = async (req, res) => {
             payload: result
         });
     } catch (error) {
-        req.logger.warning ('Error en el controlador al obtener al usuario', error);
+        req.logger.warning('Error en el controlador al obtener al usuario', error);
         res.status(400).send({
             status: 'error',
             message: error.message
@@ -99,18 +99,37 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-const logout = (req, res) => {
-    req.session.destroy(error => {
-        res.redirect("/login");
-    });
+const logout = async (req, res) => {
+    const userEmail = req.session?.user?.email;
+    try {
+        if (userEmail) {
+            const user = await userService.getUserByEmail(userEmail);
+            if (user) {
+                await userService.updateLastConnection(user._id); // Actualizar la última conexión en el logout
+                req.logger.info(`Usuario deslogueado: ${userEmail}`);
+            }
+        }
+        req.session.destroy(error => {
+            if (error) {
+                req.logger.warning('Error al destruir la sesión:', error);
+                return res.status(500).send({ status: 'error', message: 'Error al cerrar sesión' });
+            }
+            res.redirect("/login");
+        });
+    } catch (error) {
+        req.logger.warning('Error en el controlador al cerrar sesión:', error);
+        res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
+    }
 };
 
 const requestPasswordReset = async (req, res) => {
     try {
         const { email } = req.body;
         const response = await userService.requestPasswordReset(email);
+        req.logger.info(`Solicitud de restablecimiento de contraseña para: ${email}`);
         res.send(response.message);
     } catch (error) {
+        req.logger.warning(`Error en solicitud de restablecimiento de contraseña para: ${email}`, error);
         res.status(400).send(error.message);
     }
 };
@@ -118,14 +137,11 @@ const requestPasswordReset = async (req, res) => {
 const resetPassword = async (req, res) => {
     try {
         const { token, newPassword } = req.body;
-        console.log('Datos recibidos en userController.resetPassword:', { token, newPassword });
-
         const response = await userService.resetPassword(token, newPassword);
-        console.log('Respuesta de userService.resetPassword:', response);
-
+        req.logger.info(`Contraseña restablecida con token: ${token}`);
         res.send(response.message);
     } catch (error) {
-        console.log('Error en userController.resetPassword:', error.message);
+        req.logger.warning('Error en userController.resetPassword:', error.message);
         res.status(400).send(error.message);
     }
 };
@@ -142,10 +158,11 @@ const changeUserRole = async (req, res) => {
 
         user.role = (user.role === 'user') ? 'premium' : 'user';
         await userService.updateUserRole(user._id, user.role);
+        req.logger.info(`Rol del usuario cambiado: ${user.email} a ${user.role}`);
 
         return res.send({ status: 'success', message: `Rol cambiado a ${user.role}` });
     } catch (error) {
-        console.error('Error al cambiar el rol del usuario:', error);
+        req.logger.warning('Error al cambiar el rol del usuario:', error);
         return res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
     }
 };

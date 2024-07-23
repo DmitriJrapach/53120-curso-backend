@@ -15,7 +15,19 @@ const addUser = async (userData) => {
 
 const loginUser = async (email, password) => {
     try {
-        return await userManager.loginUser(email, password);
+        const user = await userManager.loginUser(email, password);
+        if (user) {
+            await userManager.updateLastConnection(user._id); // Actualizar la última conexión en el login
+        }
+        return user;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+const updateLastConnection = async (userId) => {
+    try {
+        return await userManager.updateLastConnection(userId);
     } catch (error) {
         throw new Error(error.message);
     }
@@ -24,6 +36,13 @@ const loginUser = async (email, password) => {
 const getUser = async (uid) => {
     try {
         return await userManager.getUser(uid);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+const getUserByEmail = async (email) => {
+    try {
+        return await userManager.getUserByEmail(email);
     } catch (error) {
         throw new Error(error.message);
     }
@@ -65,7 +84,9 @@ const updateUserRole = async (userId, newRole) => {
 export default {
     addUser,
     loginUser,
+    updateLastConnection,
     getUser,
+    getUserByEmail,
     getAllUsers,
     requestPasswordReset,
     resetPassword,

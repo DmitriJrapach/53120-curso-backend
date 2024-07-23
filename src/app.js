@@ -99,7 +99,7 @@ app.use(addLogger);
 
 
 // Routers
-app.use('/api/sessions', userRouter);
+app.use('/api/users', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/carts', cartRouter);
 app.use('/api/chat', messageRouter);

@@ -1,7 +1,6 @@
 // src/middleware/adminMiddleware.js
 
 const isAdmin = (req, res, next) => {
-    console.log('User session in isAdmin:', req.session.user);
     
     if (!req.session.user) {
         return res.status(401).send({ status: 'error', message: 'Unauthorized' });

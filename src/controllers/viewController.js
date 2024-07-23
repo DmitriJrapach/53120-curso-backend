@@ -123,9 +123,6 @@ const getCartView = async (req, res) => {
             });
         }
 
-        console.log('Carrito:', cart);
-        console.log('Usuario:', user);
-
         // Renderiza la vista del carrito con los datos obtenidos
         res.render('cart', {
             cart: cart,

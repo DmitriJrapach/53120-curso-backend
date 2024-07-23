@@ -40,6 +40,17 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "carts", // Referencia al modelo de carritos
         required: true
+    },
+    documents: { 
+        type: [{ 
+                name: String,
+                reference: String
+            }]
+    },
+
+    last_connection: {
+        type: Date,
+        default: null
     }
 });
 

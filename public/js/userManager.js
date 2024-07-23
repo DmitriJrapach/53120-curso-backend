@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const newRole = currentRole === 'user' ? 'premium' : 'user';
 
             try {
-                const response = await fetch(`/api/sessions/premium/${userId}`, {
+                const response = await fetch(`/api/users/premium/${userId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'

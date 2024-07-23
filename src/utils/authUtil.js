@@ -10,10 +10,7 @@ export const passportCall = (strategy) => {
                     error: info.message ? info.message : info.toString()
                 });
             }
-
-            console.log("Authenticated user:", user);
             req.user = user;
-            // req.session.user = user;
             next();
         })(req, res, next);
     }

@@ -5,7 +5,7 @@ import userModel from "../models/userModel.js";
 class UserRepository {
     async findById(id) {
         try {
-            return await userModel.findById(id).lean();
+            return await userModel.findById(id);
         } catch (error) {
             throw new Error("Error al buscar el usuario por ID");
         }
