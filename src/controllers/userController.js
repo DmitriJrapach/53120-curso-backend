@@ -145,25 +145,25 @@ const resetPassword = async (req, res) => {
         res.status(400).send(error.message);
     }
 };
-export const uploadDocuments = async (req, res) => {
+const uploadDocuments = async (req, res) => {
     const { uid } = req.params;
 
     try {
         if (req.files) {
-            const uploadedDocs = [];
-
-            uploadedDocs.idDocument = req.files.idDocument ? req.files.idDocument[0].filename : null;
-            uploadedDocs.addressDocument = req.files.addressDocument ? req.files.addressDocument[0].filename : null;
-            uploadedDocs.statementDocument = req.files.statementDocument ? req.files.statementDocument[0].filename : null;
+            const uploadedDocs = {
+                idDocument: req.files.idDocument ? req.files.idDocument[0].filename : null,
+                addressDocument: req.files.addressDocument ? req.files.addressDocument[0].filename : null,
+                statementDocument: req.files.statementDocument ? req.files.statementDocument[0].filename : null
+            };
 
             const profileImage = req.files.profileImage ? req.files.profileImage[0].filename : null;
             const productImage = req.files.productImage ? req.files.productImage[0].filename : null;
 
             const documents = [
-                { name: 'idDocument', reference: `../../public/img/documents/${uploadedDocs.idDocument}` },
-                { name: 'addressDocument', reference: `../../public/img/documents/${uploadedDocs.addressDocument}` },
-                { name: 'statementDocument', reference: `../../public/img/documents/${uploadedDocs.statementDocument}` }
-            ].filter(doc => doc.reference);
+                uploadedDocs.idDocument && { name: 'idDocument', reference: `/public/img/documents/${uploadedDocs.idDocument}` },
+                uploadedDocs.addressDocument && { name: 'addressDocument', reference: `/public/img/documents/${uploadedDocs.addressDocument}` },
+                uploadedDocs.statementDocument && { name: 'statementDocument', reference: `/public/img/documents/${uploadedDocs.statementDocument}` }
+            ].filter(doc => doc); // Filtra los documentos que son null o undefined
 
             await userService.updateUserDocuments(uid, documents);
 
@@ -187,7 +187,7 @@ export const changeUserRole = async (req, res) => {
         }
 
         if (user.role === 'user') {
-            const requiredDocuments = [];
+            const requiredDocuments = ['idDocument', 'addressDocument', 'statementDocument'];
             const uploadedDocuments = user.documents.map(doc => doc.name);
 
             const hasAllDocuments = requiredDocuments.every(doc => uploadedDocuments.includes(doc));
@@ -210,7 +210,6 @@ export const changeUserRole = async (req, res) => {
         return res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
     }
 };
-
 // const uploadDocuments = async (req, res) => {
 //     const { uid } = req.params;
 //     const files = req.files;

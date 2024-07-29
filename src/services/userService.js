@@ -73,6 +73,14 @@ const resetPassword = async (token, newPassword) => {
     }
 };
 
+const updateUserDocuments = async (userId, documents) => {
+    try {
+        return await userManager.updateUserDocuments(userId, documents);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
 const updateUserRole = async (userId, newRole) => {
     try {
         return await userManager.updateUserRole(userId, newRole);
@@ -81,13 +89,6 @@ const updateUserRole = async (userId, newRole) => {
     }
 };
 
-const updateUserDocuments = async (userId, documents) => {
-    try {
-        return await userManager.updateUserDocuments(userId, { documents });
-    } catch (error) {
-        throw new Error(error.message);
-    }
-};
 export default {
     addUser,
     loginUser,

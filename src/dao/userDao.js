@@ -155,7 +155,7 @@ class UserManager {
             throw new Error('Error al actualizar el rol del usuario');
         }
     }
-    
+
     async updateUserDocuments(userId, documents) {
         try {
             return await this.userRepository.updateUser(userId, { documents });
