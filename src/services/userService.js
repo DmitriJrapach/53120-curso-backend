@@ -81,6 +81,13 @@ const updateUserRole = async (userId, newRole) => {
     }
 };
 
+const updateUserDocuments = async (userId, documents) => {
+    try {
+        return await userManager.updateUserDocuments(userId, { documents });
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
 export default {
     addUser,
     loginUser,
@@ -90,5 +97,6 @@ export default {
     getAllUsers,
     requestPasswordReset,
     resetPassword,
-    updateUserRole
+    updateUserRole,
+    updateUserDocuments
 };

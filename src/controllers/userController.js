@@ -145,9 +145,39 @@ const resetPassword = async (req, res) => {
         res.status(400).send(error.message);
     }
 };
+export const uploadDocuments = async (req, res) => {
+    const { uid } = req.params;
 
-const changeUserRole = async (req, res) => {
-    const { uid } = req.params; // ID del usuario
+    try {
+        if (req.files) {
+            const uploadedDocs = [];
+
+            uploadedDocs.idDocument = req.files.idDocument ? req.files.idDocument[0].filename : null;
+            uploadedDocs.addressDocument = req.files.addressDocument ? req.files.addressDocument[0].filename : null;
+            uploadedDocs.statementDocument = req.files.statementDocument ? req.files.statementDocument[0].filename : null;
+
+            const profileImage = req.files.profileImage ? req.files.profileImage[0].filename : null;
+            const productImage = req.files.productImage ? req.files.productImage[0].filename : null;
+
+            const documents = [
+                { name: 'idDocument', reference: `../../public/img/documents/${uploadedDocs.idDocument}` },
+                { name: 'addressDocument', reference: `../../public/img/documents/${uploadedDocs.addressDocument}` },
+                { name: 'statementDocument', reference: `../../public/img/documents/${uploadedDocs.statementDocument}` }
+            ].filter(doc => doc.reference);
+
+            await userService.updateUserDocuments(uid, documents);
+
+            return res.status(200).json({ message: 'Documents uploaded successfully.', uploadedDocs, profileImage, productImage });
+        } else {
+            return res.status(400).json({ error: 'Bad Request', message: 'No documents were uploaded.' });
+        }
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    }
+};
+
+export const changeUserRole = async (req, res) => {
+    const { uid } = req.params;
 
     try {
         const user = await userService.getUser(uid);
@@ -156,7 +186,21 @@ const changeUserRole = async (req, res) => {
             return res.status(404).send({ status: 'error', message: 'Usuario no encontrado' });
         }
 
-        user.role = (user.role === 'user') ? 'premium' : 'user';
+        if (user.role === 'user') {
+            const requiredDocuments = [];
+            const uploadedDocuments = user.documents.map(doc => doc.name);
+
+            const hasAllDocuments = requiredDocuments.every(doc => uploadedDocuments.includes(doc));
+
+            if (!hasAllDocuments) {
+                return res.status(400).send({ status: 'error', message: 'Faltan documentos necesarios para cambiar a premium' });
+            }
+
+            user.role = 'premium';
+        } else if (user.role === 'premium') {
+            user.role = 'user';
+        }
+
         await userService.updateUserRole(user._id, user.role);
         req.logger.info(`Rol del usuario cambiado: ${user.email} a ${user.role}`);
 
@@ -166,6 +210,65 @@ const changeUserRole = async (req, res) => {
         return res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
     }
 };
+
+// const uploadDocuments = async (req, res) => {
+//     const { uid } = req.params;
+//     const files = req.files;
+
+//     console.log('Incoming request to upload documents:');
+//     console.log('uid:', uid); // Verificar si el uid está presente
+//     console.log('files:', files);
+    
+//     try {
+//         if (!files || files.length === 0) {
+//             return res.status(400).send({ status: 'error', message: 'No se subieron archivos' });
+//         }
+
+//         const user = await userService.getUser(uid);
+
+//         if (!user) {
+//             return res.status(404).send({ status: 'error', message: 'Usuario no encontrado' });
+//         }
+
+//         files.forEach(file => {
+//             let type;
+//             switch (file.fieldname) {
+//                 case 'profile':
+//                     type = 'profile';
+//                     break;
+//                 case 'product':
+//                     type = 'product';
+//                     break;
+//                 case 'document':
+//                     type = 'document';
+//                     break;
+//                 case 'identification':
+//                     type = 'identification';
+//                     break;
+//                 case 'proof_of_address':
+//                     type = 'proof_of_address';
+//                     break;
+//                 case 'bank_statement':
+//                     type = 'bank_statement';
+//                     break;
+//                 default:
+//                     type = 'document';
+//             }
+
+//             user.documents.push({
+//                 name: type,
+//                 reference: file.path
+//             });
+//         });
+
+//         await user.save();
+
+//         res.send({ status: 'success', message: 'Documentos subidos y actualizados correctamente' });
+//     } catch (error) {
+//         console.error('Error al subir documentos:', error);
+//         res.status(500).send({ status: 'error', message: 'Error al subir documentos' });
+//     }
+// };
 
 export default {
     githubAuth,
@@ -178,5 +281,6 @@ export default {
     logout,
     requestPasswordReset,
     resetPassword,
-    changeUserRole
+    changeUserRole,
+    uploadDocuments
 };

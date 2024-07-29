@@ -168,6 +168,16 @@ const adminDashboard = (req, res) => {
         style: 'index.css'
     });
 };
+const userDashboard = (req, res) => {
+    const user = req.session.user;
+    console.log('User data being passed to view:', user); // Verificación de los datos de usuario
+
+    res.render('userDashboard', {
+        title: 'User Dashboard',
+        style: 'index.css',
+        user: user
+    });
+};
 
 export default {
     isAuthenticated,
@@ -181,5 +191,6 @@ export default {
     mockProducts,
     forgotPassword,
     getResetPassword,
-    adminDashboard
+    adminDashboard,
+    userDashboard
 };

@@ -2,7 +2,8 @@ import { Router } from 'express';
 import passport from 'passport';
 import userController from '../controllers/userController.js';
 import { passportCall } from "../utils/authUtil.js";
-import isAdmin from "../middleware/adminMiddleware.js"
+import isAdmin from "../middleware/adminMiddleware.js";
+import upload, { uploadFields } from '../utils/multerUtil.js';
 
 const router = Router();
 
@@ -29,5 +30,7 @@ router.post('/forgot-password', userController.requestPasswordReset);
 
 // Endpoint para manejar la actualización de la contraseña
 router.post('/reset-password', userController.resetPassword);
+
+router.post('/:uid/documents', passportCall('jwt'), upload.fields(uploadFields), userController.uploadDocuments);
 
 export default router;

@@ -88,6 +88,14 @@ class UserManager {
             throw new Error("Error al obtener el usuario");
         }
     }
+    async getAllUsers() {
+        try {
+            return await this.userRepository.findAll();
+        } catch (error) {
+            console.error('Error en UserManager.getAllUsers:', error.message);
+            throw new Error('Error al obtener todos los usuarios');
+        }
+    }
 
     async requestPasswordReset(email) {
         try {
@@ -138,7 +146,7 @@ class UserManager {
             throw new Error('Error al restablecer la contraseña. El token es inválido o ha expirado.');
         }
     }
-
+    
     async updateUserRole(userId, newRole) {
         try {
             return await this.userRepository.updateUser(userId, { role: newRole });
@@ -147,13 +155,13 @@ class UserManager {
             throw new Error('Error al actualizar el rol del usuario');
         }
     }
-
-    async getAllUsers() {
+    
+    async updateUserDocuments(userId, documents) {
         try {
-            return await this.userRepository.findAll();
+            return await this.userRepository.updateUser(userId, { documents });
         } catch (error) {
-            console.error('Error en UserManager.getAllUsers:', error.message);
-            throw new Error('Error al obtener todos los usuarios');
+            console.error('Error en UserManager.updateUserDocuments:', error.message);
+            throw new Error('Error al actualizar los documentos del usuario');
         }
     }
 }

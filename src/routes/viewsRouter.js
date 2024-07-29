@@ -3,6 +3,7 @@
 import { Router } from 'express';
 import viewController from '../controllers/viewController.js';
 import isAdmin from '../middleware/adminMiddleware.js';
+import isUserOrPremium from '../middleware/userOrPremiumMiddleware.js';
 
 const router = Router();
 
@@ -38,5 +39,7 @@ router.get('/forgot-password', viewController.forgotPassword);
 router.get('/reset-password/:token', viewController.getResetPassword);
 
 router.get('/admin/dashboard', isAdmin, viewController.adminDashboard);
+
+router.get('/user/dashboard', isUserOrPremium, viewController.userDashboard);
 
 export default router;

@@ -3,6 +3,8 @@
     <hr>
     {{#if (eq user.role "admin")}}
         <a href="/admin/dashboard" class="button">Panel de Administrador</a>
+    {{else if (eq user.role "user")}}
+        <a href="/user/dashboard" class="button">Panel de Usuario</a>
     {{/if}}
     <h2>Productos</h2>
     <form class="box" method="post" action="/api/users/logout">
@@ -65,7 +67,6 @@
     <hr>
     <a href="/cart/{{user.cartId}}" class="button">Ver Carrito</a>
 </div>
-
 <div id="message" style="display:none;">Producto agregado!</div>
 
 <!-- Incluir el archivo JavaScript -->
