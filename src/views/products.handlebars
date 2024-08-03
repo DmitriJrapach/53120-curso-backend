@@ -3,7 +3,7 @@
     <hr>
     {{#if (eq user.role "admin")}}
         <a href="/admin/dashboard" class="button">Panel de Administrador</a>
-    {{else if (eq user.role "user")}}
+    {{else if (eq user.role "user, premium")}}
         <a href="/user/dashboard" class="button">Panel de Usuario</a>
     {{/if}}
     <h2>Productos</h2>

@@ -31,7 +31,7 @@ before(async function () {
 describe("Testing users routes", () => {
     it("POST Register for Users Endpoint", async () => {
         const response = await requester
-            .post("/api/sessions/register")
+            .post("/api/users/register")
             .send(newUser)
             .set("Accept", "application/json");
 
@@ -45,7 +45,7 @@ describe("Testing users routes", () => {
 
     it("POST Login Operation for Users Endpoint", async () => {
         const response = await requester
-            .post("/api/sessions/login")
+            .post("/api/users/login")
             .send({ email: "enano@test", password: "test" })
             .set("Accept", "application/json");
 

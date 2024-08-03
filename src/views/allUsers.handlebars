@@ -1,0 +1,32 @@
+<!-- views/userManager.handlebars -->
+<div class="box">
+    <h1>Los Usuarios</h1>
+    <div class="box">
+        <h2>Lista de Usuarios</h2>
+        {{#if users.length}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo Electrónico</th>
+                    <th>Rol</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each users}}
+                <tr>
+                    <td>{{this.name}}</td>
+                    <td>{{this.email}}</td>
+                    <td>{{this.role}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{else}}
+        <p>No hay usuarios registrados.</p>
+        {{/if}}
+    </div>
+</div>
+
+<!-- Incluir archivo JavaScript -->
+<script src="/js/userManager.js"></script>

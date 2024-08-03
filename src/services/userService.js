@@ -89,6 +89,29 @@ const updateUserRole = async (userId, newRole) => {
     }
 };
 
+const deleteUser = async (userId) => {
+    try {
+        const result = await userManager.deleteUser(userId);
+        if (!result) {
+            throw new Error('Usuario no encontrado');
+        }
+        return result;
+    } catch (error) {
+        console.error('Servicio: Error al eliminar el usuario:', error);
+        throw new Error('Error al eliminar el usuario: ' + error.message);
+    }
+};
+const deleteInactiveUsers = async () => {
+    console.log('Servicio: Iniciando eliminación de usuarios inactivos');
+
+    try {
+        return await userManager.deleteInactiveUsers();
+    } catch (error) {
+        console.error('Servicio: Error al eliminar usuarios inactivos:', error);
+        throw new Error('Error al eliminar usuarios inactivos: ' + error.message);
+    }
+};
+
 export default {
     addUser,
     loginUser,
@@ -99,5 +122,7 @@ export default {
     requestPasswordReset,
     resetPassword,
     updateUserRole,
-    updateUserDocuments
+    updateUserDocuments,
+    deleteUser,
+    deleteInactiveUsers
 };

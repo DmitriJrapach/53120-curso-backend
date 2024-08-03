@@ -1,6 +1,7 @@
 // src/controllers/userController.js
 import userService from '../services/userService.js';
 import { userDTO } from '../dto/userDTO.js';
+import UsersDTO from '../dto/usersDTO.js';
 
 const githubAuth = (req, res) => {
     res.send({
@@ -81,8 +82,24 @@ const getUser = async (req, res) => {
         });
     }
 };
-
 const getAllUsers = async (req, res) => {
+    try {
+        const users = await userService.getAllUsers();
+        const usersDTOs = users.map(user => new UsersDTO(user));
+        res.render('allUsers', { 
+            title: 'Users',
+            style: 'index.css',
+            users: usersDTOs
+            });
+    } catch (error) {
+        req.logger.warning('Error al obtener la lista de usuarios', error);
+        res.status(500).send({
+            status: 'error',
+            message: 'Error al obtener la lista de usuarios'
+        });
+    }
+};
+const adminGetAllUsers = async (req, res) => {
     try {
         const users = await userService.getAllUsers();
         res.render('userManager', { 
@@ -210,64 +227,32 @@ export const changeUserRole = async (req, res) => {
         return res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
     }
 };
-// const uploadDocuments = async (req, res) => {
-//     const { uid } = req.params;
-//     const files = req.files;
+const deleteUser = async (req, res) => {
+    const { uid } = req.params;
 
-//     console.log('Incoming request to upload documents:');
-//     console.log('uid:', uid); // Verificar si el uid está presente
-//     console.log('files:', files);
-    
-//     try {
-//         if (!files || files.length === 0) {
-//             return res.status(400).send({ status: 'error', message: 'No se subieron archivos' });
-//         }
-
-//         const user = await userService.getUser(uid);
-
-//         if (!user) {
-//             return res.status(404).send({ status: 'error', message: 'Usuario no encontrado' });
-//         }
-
-//         files.forEach(file => {
-//             let type;
-//             switch (file.fieldname) {
-//                 case 'profile':
-//                     type = 'profile';
-//                     break;
-//                 case 'product':
-//                     type = 'product';
-//                     break;
-//                 case 'document':
-//                     type = 'document';
-//                     break;
-//                 case 'identification':
-//                     type = 'identification';
-//                     break;
-//                 case 'proof_of_address':
-//                     type = 'proof_of_address';
-//                     break;
-//                 case 'bank_statement':
-//                     type = 'bank_statement';
-//                     break;
-//                 default:
-//                     type = 'document';
-//             }
-
-//             user.documents.push({
-//                 name: type,
-//                 reference: file.path
-//             });
-//         });
-
-//         await user.save();
-
-//         res.send({ status: 'success', message: 'Documentos subidos y actualizados correctamente' });
-//     } catch (error) {
-//         console.error('Error al subir documentos:', error);
-//         res.status(500).send({ status: 'error', message: 'Error al subir documentos' });
-//     }
-// };
+    try {
+        const user = await userService.deleteUser(uid);
+        if (!user) {
+            return res.status(404).send({ status: 'error', message: 'Usuario no encontrado' });
+        }
+        res.send({ status: 'success', message: 'Usuario eliminado exitosamente' });
+    } catch (error) {
+        console.error('Controlador: Error al eliminar el usuario:', error);
+        req.logger.warning('Error al eliminar el usuario:', error);
+        res.status(500).send({ status: 'error', message: 'Error interno del servidor' });
+    }
+};
+const deleteInactiveUsers = async (req, res) => {
+    console.log('Controlador: Intentando eliminar usuarios inactivos');
+    try {
+        const result = await userService.deleteInactiveUsers();
+        console.log('Controlador: Usuarios inactivos eliminados', result);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Controlador: Error al eliminar usuarios inactivos:', error);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+};
 
 export default {
     githubAuth,
@@ -277,9 +262,12 @@ export default {
     current,
     getUser,
     getAllUsers,
+    adminGetAllUsers,
     logout,
     requestPasswordReset,
     resetPassword,
     changeUserRole,
-    uploadDocuments
+    uploadDocuments,
+    deleteUser,
+    deleteInactiveUsers
 };

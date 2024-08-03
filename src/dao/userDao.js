@@ -164,6 +164,63 @@ class UserManager {
             throw new Error('Error al actualizar los documentos del usuario');
         }
     }
+    async deleteUser(id) {    
+        try {
+            const result = await this.userRepository.deleteUser(id);
+            return result;
+        } catch (error) {
+            console.error('Manager: Error al eliminar el usuario:', error);
+            throw new Error('Error al eliminar el usuario');
+        }
+    }
+    async deleteInactiveUsers() {
+        console.log('Gestor: Iniciando eliminación de usuarios inactivos');
+        try {
+            // Obtener la fecha y hora actual
+            const now = new Date();
+ 
+            // Calcular la fecha límite para usuarios inactivos (2 días antes de ahora)
+            const twoDaysAgo = new Date(now.getTime() - 10 * 60 * 1000); // 2 días en milisegundos
+            console.log('Fecha límite para inactivos:', twoDaysAgo);
+
+            // Buscar usuarios inactivos
+            const inactiveUsers = await this.userRepository.findInactiveUsers(twoDaysAgo);
+            console.log('Gestor: Usuarios inactivos encontrados', inactiveUsers.length);
+ 
+            // Eliminar usuarios inactivos
+            const result = await this.userRepository.deleteManyInactiveUsers(twoDaysAgo);
+            console.log('Gestor: Usuarios eliminados', result.deletedCount);
+ 
+            // Enviar correos electrónicos a los usuarios eliminados
+            for (const user of inactiveUsers) {
+                const mailOptions = {
+                    from: 'Dmitri@example.com',
+                    to: user.email,
+                    subject: 'Cuenta Eliminada por Inactividad',
+                    html: `Tu cuenta ha sido eliminada debido a inactividad.`
+                };
+        
+                await new Promise((resolve, reject) => {
+                    transport.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            console.error('Error al enviar correo electrónico:', error);
+                            return reject(error);
+                        }
+                        resolve(info);
+                    });
+                });
+            }
+ 
+            return {
+                status: 'success',
+                deletedCount: result.deletedCount
+            };
+        } catch (error) {
+            console.error('Gestor: Error al eliminar usuarios inactivos:', error);
+            throw new Error('Error al eliminar usuarios inactivos: ' + error.message);
+        }
+    }
+    
 }
 
 export default UserManager;

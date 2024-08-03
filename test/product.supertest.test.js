@@ -33,7 +33,7 @@ before(async function () {
 describe("Testing login endpoint", () => {
   it("Login credentials", async () => {
     const response = await requester
-      .post("/api/sessions/login")
+      .post("/api/users/login")
       .send(isAdmin)
       .set("Accept", "application/json");
 

@@ -1,4 +1,3 @@
-<!-- views/userManager.handlebars -->
 <div class="box">
     <h1>Administrar Usuarios</h1>
     <a href="/admin/dashboard" class="button">Dashboard</a>
@@ -29,6 +28,9 @@
                             data-current-role="{{this.role}}">
                             Cambiar a {{#if (eq this.role "user")}}Premium{{else}}User{{/if}}
                         </button>
+                        <button class="delete-user-button" data-user-id="{{this._id}}">
+                            Eliminar
+                        </button>
                     </td>
                 </tr>
                 {{/each}}
@@ -38,6 +40,7 @@
         <p>No hay usuarios registrados.</p>
         {{/if}}
     </div>
+    <button id="delete-inactive-users" class="button">Eliminar Usuarios Inactivos</button>
 </div>
 
 <!-- Incluir archivo JavaScript -->

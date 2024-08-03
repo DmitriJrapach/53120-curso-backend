@@ -44,11 +44,13 @@ class UserRepository {
         }
     }
 
-    async deleteUser(id) {
+    async deleteUser(id) {    
         try {
-            return await userModel.findByIdAndDelete(id).lean();
+            const result = await userModel.findByIdAndDelete(id).lean();
+            return result;
         } catch (error) {
-            throw new Error("Error al eliminar el usuario");
+            console.error('Repositorio: Error al eliminar el usuario:', error);
+            throw new Error('Error al eliminar el usuario');
         }
     }
 
@@ -68,6 +70,26 @@ class UserRepository {
             return await userModel.find({}).lean();
         } catch (error) {
             throw new Error('Error al obtener todos los usuarios');
+        }
+    }
+    async findInactiveUsers(twoDaysAgo) {
+        try {
+            console.log('Buscando usuarios inactivos con fecha límite:', twoDaysAgo);
+            const users = await userModel.find({ last_connection: { $lte: twoDaysAgo } });
+            console.log('Usuarios inactivos encontrados:', users);
+            return users;
+        } catch (error) {
+            throw new Error("Error al buscar usuarios inactivos");
+        }
+    }
+
+    async deleteManyInactiveUsers(twoDaysAgo) {
+        try {
+            const result = await userModel.deleteMany({ last_connection: { $lte: twoDaysAgo } });
+            console.log('Resultado de la eliminación:', result);
+            return result;
+        } catch (error) {
+            throw new Error("Error al eliminar usuarios inactivos");
         }
     }
 
