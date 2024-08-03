@@ -21,7 +21,8 @@ import compression from 'express-compression';
 import errors from './middleware/errors/index.js';
 import { addLogger, startLogger } from './utils/loggerUtil.js';
 import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUiExpress from 'swagger-ui-express'
+import swaggerUiExpress from 'swagger-ui-express';
+import './utils/handlebarsHelpers.js';
 
 dotenv.config();
 

@@ -193,7 +193,7 @@ const uploadDocuments = async (req, res) => {
     }
 };
 
-export const changeUserRole = async (req, res) => {
+const changeUserRole = async (req, res) => {
     const { uid } = req.params;
 
     try {

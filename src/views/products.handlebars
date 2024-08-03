@@ -3,8 +3,10 @@
     <hr>
     {{#if (eq user.role "admin")}}
         <a href="/admin/dashboard" class="button">Panel de Administrador</a>
-    {{else if (eq user.role "user, premium")}}
+    {{else if (eq user.role "user")}}
         <a href="/user/dashboard" class="button">Panel de Usuario</a>
+    {{else if (eq user.role "premium")}}
+        <a href="/premium/dashboard" class="button">Panel de Usuario Premium</a>
     {{/if}}
     <h2>Productos</h2>
     <form class="box" method="post" action="/api/users/logout">

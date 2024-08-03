@@ -2,7 +2,7 @@
 // src/routes/messageRouter.js
 import { Router } from 'express';
 import messageController from '../controllers/messageController.js';
-import isUserOrPremium from "../middleware/userOrPremiumMiddleware.js"
+import { isUserOrPremium } from '../middleware/roleMiddleware.js';
 
 const router = Router();
 

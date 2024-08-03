@@ -1,7 +1,7 @@
 // src/middleware/userMiddleware.js
 import productModel from '../dao/models/productModel.js';
 
-const isUserOrPremium = async (req, res, next) => {
+const isUserOrPremiumOwner = async (req, res, next) => {
   console.log('User session in isUserOrPremium:', req.session.user);
 
   // Verificar si el usuario está autenticado
@@ -40,4 +40,4 @@ const isUserOrPremium = async (req, res, next) => {
   return res.status(403).send({ status: 'error', message: 'No tienes permisos para realizar esta acción' });
 };
 
-export default isUserOrPremium;
+export default isUserOrPremiumOwner;

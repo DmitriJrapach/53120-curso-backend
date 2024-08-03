@@ -193,24 +193,14 @@ class UserManager {
  
             // Enviar correos electrónicos a los usuarios eliminados
             for (const user of inactiveUsers) {
-                const mailOptions = {
-                    from: 'Dmitri@example.com',
-                    to: user.email,
-                    subject: 'Cuenta Eliminada por Inactividad',
-                    html: `Tu cuenta ha sido eliminada debido a inactividad.`
-                };
-        
-                await new Promise((resolve, reject) => {
-                    transport.sendMail(mailOptions, (error, info) => {
-                        if (error) {
-                            console.error('Error al enviar correo electrónico:', error);
-                            return reject(error);
-                        }
-                        resolve(info);
-                    });
-                });
-            }
- 
+                try {
+                    await sendMail(user.email, 'Cuenta Eliminada por Inactividad', `Tu cuenta ha sido eliminada debido a inactividad.`);
+                    console.log(`Correo electrónico enviado a: ${user.email}`);
+                } catch (error) {
+                    console.error(`Error al enviar correo electrónico a ${user.email}:`, error);
+                }
+            };
+
             return {
                 status: 'success',
                 deletedCount: result.deletedCount

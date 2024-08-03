@@ -2,8 +2,8 @@
 // src/routes/viewRouter.js
 import { Router } from 'express';
 import viewController from '../controllers/viewController.js';
-import isAdmin from '../middleware/adminMiddleware.js';
-import isUserOrPremium from '../middleware/userOrPremiumMiddleware.js';
+import isUserOrPremiumOwner from '../middleware/userOrPremiumOwnerMiddleware.js';
+import { isAdmin, isPremium } from '../middleware/roleMiddleware.js';
 
 const router = Router();
 
@@ -40,6 +40,8 @@ router.get('/reset-password/:token', viewController.getResetPassword);
 
 router.get('/admin/dashboard', isAdmin, viewController.adminDashboard);
 
-router.get('/user/dashboard', isUserOrPremium, viewController.userDashboard);
+router.get('/user/dashboard', isUserOrPremiumOwner, viewController.userDashboard);
+
+router.get('/premium/dashboard', isPremium, viewController.premiumDashboard);
 
 export default router;

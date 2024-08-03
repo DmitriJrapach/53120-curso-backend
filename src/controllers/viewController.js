@@ -178,6 +178,16 @@ const userDashboard = (req, res) => {
         user: user
     });
 };
+const premiumDashboard = (req, res) => {
+    const user = req.session.user;
+    console.log('User data being passed to view:', user); // Verificación de los datos de usuario
+
+    res.render('premiumUserDashboard', {
+        title: 'Premium User Dashboard',
+        style: 'index.css',
+        user: user
+    });
+};
 
 export default {
     isAuthenticated,
@@ -192,5 +202,6 @@ export default {
     forgotPassword,
     getResetPassword,
     adminDashboard,
-    userDashboard
+    userDashboard,
+    premiumDashboard
 };
