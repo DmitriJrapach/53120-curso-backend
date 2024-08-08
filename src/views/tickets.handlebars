@@ -1,0 +1,20 @@
+<div class="box">
+<h1>Ticket de Compra</h1>
+
+<h2>Productos Comprados:</h2>
+<ul>
+  {{#each ticket.products}}
+    <li>{{this.product.title}} - Cantidad: {{this.quantity}} - Precio: {{this.product.price}}</li>
+  {{/each}}
+</ul>
+
+<h2>Productos Eliminados por Falta de Stock:</h2>
+<ul>
+  {{#each itemsRemoved}}
+    <li>{{this.product.title}} - Cantidad: {{this.quantity}}</li>
+  {{/each}}
+</ul>
+
+<h3>Monto Total: {{ticket.amount}}</h3>
+<a href="/products" class="button">Volver</a>
+</div>

@@ -1,7 +1,6 @@
 // src/routes/ticketRouter.js
 import { Router } from 'express';
 import ticketController from '../controllers/ticketController.js';
-import { passportCall } from "../utils/authUtil.js";
 
 const router = Router();
 

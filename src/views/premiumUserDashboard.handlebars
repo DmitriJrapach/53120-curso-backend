@@ -3,6 +3,7 @@
     <h2>Subir Documentos y Fotos</h2>
     <a href="/realTimeProducts" class="button">Administrar Productos</a>
     <a href="/logout" class="button">Cerrar Sesión</a>
+    <a href="/products" class="button">Volver</a>
     <form class="box" method="post" action="/api/users/{{user._id}}/documents" enctype="multipart/form-data">
         <label for="profileImage">Imagen de Perfil:</label>
         <input type="file" id="profileImage" name="profileImage">
@@ -10,15 +11,6 @@
         <label for="productImage">Imagen de Producto:</label>
         <input type="file" id="productImage" name="productImage">
         
-        <label for="idDocument">Documento de Identificación:</label>
-        <input type="file" id="idDocument" name="idDocument">
-        
-        <label for="addressDocument">Documento de Dirección:</label>
-        <input type="file" id="addressDocument" name="addressDocument">
-        
-        <label for="statementDocument">Estado de Cuenta:</label>
-        <input type="file" id="statementDocument" name="statementDocument">
-
         <button type="submit" class="button">Subir</button>
     </form>
 </div>

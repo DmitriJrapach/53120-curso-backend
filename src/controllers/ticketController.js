@@ -16,15 +16,14 @@ class TicketController {
   async getTicketById(req, res) {
     const { tid } = req.params;
     try {
-      const result = await ticketService.getTicketById(tid);
-      if (!result) throw new Error(`Ticket with ID ${tid} does not exist!`);
-      res.send({ status: "success", payload: result });
+      const ticket = await ticketService.getTicketById(tid); // Usar 'ticket' en lugar de 'result'
+      if (!ticket) throw new Error(`Ticket with ID ${tid} does not exist!`);
+      res.render('tickets/tid', { ticket }); // Pasar 'ticket' a la vista
     } catch (error) {
-      req.logger.warning ('Error en el controlador al obtener el ticket:', error);
-      res.status(400).send({ status: "error", message: error.message });
+      req.logger.warning('Error en el controlador al obtener el ticket:', error);
+      res.status(400).send({ status: 'error', message: error.message });
     }
   }
-
   async createTicket(req, res) {
     try {
       const { purchaseDateTime, amount, purchaser } = req.body;

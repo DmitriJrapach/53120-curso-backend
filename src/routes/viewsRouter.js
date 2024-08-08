@@ -21,6 +21,8 @@ router.get("/register", viewController.register);
 
 router.get("/cart/:cid", viewController.isAuthenticated, viewController.getCartView);
 
+router.get("/carts", viewController.isAuthenticated, viewController.getAllCarts);
+
 router.get("/mockingproducts", viewController.mockProducts);
 
 router.get("/loggerTest", (req, res) => {
@@ -43,5 +45,7 @@ router.get('/admin/dashboard', isAdmin, viewController.adminDashboard);
 router.get('/user/dashboard', isUserOrPremiumOwner, viewController.userDashboard);
 
 router.get('/premium/dashboard', isPremium, viewController.premiumDashboard);
+
+router.get('/tickets/:tid', viewController.isAuthenticated, viewController.getTicketView);
 
 export default router;

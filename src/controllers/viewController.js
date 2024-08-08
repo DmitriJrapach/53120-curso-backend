@@ -2,6 +2,7 @@
 import productService from '../services/productService.js';
 import cartService from '../services/cartService.js'
 import { generateProducts } from "../utils/mockUtil.js";
+import ticketService from '../services/ticketService.js';
 
 const isAuthenticated = (req, res, next) => {
     if (req.session.user) {
@@ -96,48 +97,29 @@ const register = (req, res) => {
         failRegister: req.session.failRegister ?? false
     });
 };
-
 const getCartView = async (req, res) => {
     try {
-        const user = req.session.user;
-
-        // Usa cartId directamente ya que hemos normalizado la sesión
-        const cartId = user.cartId;
-
-        if (!cartId) {
-            console.log('No se encontró un carrito asociado al usuario');
-            return res.status(404).send({
-                status: 'error',
-                message: 'Carrito no encontrado'
-            });
-        }
-
-        // Obtén el carrito usando el cartId
+        const cartId = req.session.user.cartId || req.session.user.cart;
         const cart = await cartService.getCartById(cartId);
-
         if (!cart) {
-            console.log('Carrito no encontrado');
-            return res.status(404).send({
-                status: 'error',
-                message: 'Carrito no encontrado'
-            });
+            return res.status(404).send({ status: 'error', message: 'Carrito no encontrado' });
         }
 
-        // Renderiza la vista del carrito con los datos obtenidos
-        res.render('cart', {
-            cart: cart,
-            user: user,
-            style: 'index.css'
-        });
+        res.render('cart', { cart: cart, user: req.user, style: 'index.css' });
     } catch (error) {
-        req.logger.warning ('Error en el controlador al obtener vista del carrito:', error);
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
+        req.logger.warning('Error al obtener la vista del carrito:', error);
+        res.status(400).send({ status: 'error', message: error.message });
     }
 };
-
+const getAllCarts = async (req, res) => {
+    try {
+        const carts = await cartService.getAllCarts();
+        res.render('allCarts', { carts, user: req.user, style: 'index.css' });
+    } catch (error) {
+        req.logger.warning('Error al obtener los carritos:', error);
+        res.status(400).send({ status: 'error', message: error.message });
+    }
+};
 const mockProducts = (_req, res) => {
     let products = [];
     for (let i = 0; i < 100; i++) {
@@ -188,6 +170,22 @@ const premiumDashboard = (req, res) => {
         user: user
     });
 };
+const getTicketView = async (req, res) => {
+    try {
+        const ticketId = req.params.tid;
+        const ticket = await ticketService.getTicketById(ticketId);
+        if (!ticket) {
+            return res.status(404).send({ status: 'error', message: 'Ticket no encontrado' });
+        }
+
+        const itemsRemoved = req.session.itemsRemoved || [];
+        res.render('tickets', { ticket, itemsRemoved, user: req.user, style: 'index.css' });
+
+    } catch (error) {
+        req.logger.warning('Error al obtener la vista del ticket:', error);
+        res.status(400).send({ status: 'error', message: error.message });
+    }
+};
 
 export default {
     isAuthenticated,
@@ -198,10 +196,12 @@ export default {
     logout,
     register,
     getCartView,
+    getAllCarts,
     mockProducts,
     forgotPassword,
     getResetPassword,
     adminDashboard,
     userDashboard,
-    premiumDashboard
+    premiumDashboard,
+    getTicketView
 };

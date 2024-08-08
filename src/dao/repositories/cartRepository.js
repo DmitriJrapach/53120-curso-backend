@@ -10,10 +10,10 @@ class CartRepository {
 }
   async getAllCarts() {
     try {
-      return await cartModel.find();
+      return await cartModel.find().populate('products.product').lean();
     } catch (error) {
-      console.error(error.message);
-      throw new Error("Error al buscar los productos");
+        console.error(error.message);
+        throw new Error("Error al buscar los carritos");
     }
   }
 
