@@ -184,9 +184,9 @@ const uploadDocuments = async (req, res) => {
 
             await userService.updateUserDocuments(uid, documents);
 
-            return res.status(200).json({ message: 'Documents uploaded successfully.', uploadedDocs, profileImage, productImage });
+            return res.redirect(`/user/dashboard?message=Documents uploaded successfully.`);
         } else {
-            return res.status(400).json({ error: 'Bad Request', message: 'No documents were uploaded.' });
+            return res.redirect(`/user/dashboard?message=No documents were uploaded.`);
         }
     } catch (error) {
         return res.status(500).json({ error: 'Internal Server Error', message: error.message });

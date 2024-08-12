@@ -3,6 +3,7 @@ import productService from '../services/productService.js';
 import cartService from '../services/cartService.js'
 import { generateProducts } from "../utils/mockUtil.js";
 import ticketService from '../services/ticketService.js';
+import mongoose from 'mongoose';
 
 const isAuthenticated = (req, res, next) => {
     if (req.session.user) {
@@ -61,6 +62,30 @@ const getRealTimeProducts = async (req, res) => {
     }
 };
 
+const getPremiumProducts = async (req, res) => {
+    try {
+        const userId = req.session.user._id;
+
+        // Verifica si userId está presente y es un ObjectId válido
+        console.log('ID del usuario en sesión:', userId);
+        if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+            console.error('ID del usuario no es válido:', userId);
+            return res.status(400).send('ID de usuario no válido');
+        }
+
+        // Obtén los productos del propietario
+        const products = await productService.getProductsByOwner(userId);
+
+        res.render('premiumUserProducts', { 
+            products,
+            style: "index.css"
+         });
+    } catch (error) {
+        console.error('Error en el controlador al obtener los productos en tiempo real:', error);
+        res.status(500).send('Error al obtener productos del propietario');
+    }
+};
+
 const chat = (req, res) => {
     const user = req.session.user;
     res.render("chat", {
@@ -100,15 +125,26 @@ const register = (req, res) => {
 const getCartView = async (req, res) => {
     try {
         const cartId = req.session.user.cartId || req.session.user.cart;
+        console.log(cartId)
         const cart = await cartService.getCartById(cartId);
         if (!cart) {
-            return res.status(404).send({ status: 'error', message: 'Carrito no encontrado' });
+            return res.status(404).send({
+                status: 'error',
+                message: 'Carrito no encontrado'
+            });
         }
 
-        res.render('cart', { cart: cart, user: req.user, style: 'index.css' });
+        res.render('cart', {
+            cart: cart,
+            user: req.session.user,
+            style: 'index.css'
+        });
     } catch (error) {
         req.logger.warning('Error al obtener la vista del carrito:', error);
-        res.status(400).send({ status: 'error', message: error.message });
+        res.status(400).send({
+            status: 'error',
+            message: error.message
+        });
     }
 };
 const getAllCarts = async (req, res) => {
@@ -191,6 +227,7 @@ export default {
     isAuthenticated,
     getProducts,
     getRealTimeProducts,
+    getPremiumProducts,
     chat,
     login,
     logout,

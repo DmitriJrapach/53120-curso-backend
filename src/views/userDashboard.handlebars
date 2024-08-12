@@ -25,7 +25,10 @@
 <div id="message" style="display:none;">Documentos subidos!</div>
 
 <script>
-    if ({{message}}) {
-        document.getElementById('message').style.display = 'block';
+    const urlParams = new URLSearchParams(window.location.search);
+    const message = urlParams.get('message');
+
+    if (message) {
+        alert(message);  // Mostrar el mensaje en un alert
     }
 </script>

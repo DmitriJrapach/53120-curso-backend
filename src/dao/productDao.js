@@ -1,29 +1,33 @@
-import ProductRepository from './repositories/productRepository.js';
+// import ProductRepository from './repositories/productRepository.js';
 
-class ProductManagerDB {
-  constructor() {
-    this.productRepository = new ProductRepository();
-  }
+// class ProductManagerDB {
+//   constructor() {
+//     this.productRepository = new ProductRepository();
+//   }
 
-  async getAllProducts(limit, page, query = {}, sort) {
-    return this.productRepository.getAllProducts(limit, page, query, sort);
-  }
+//   async getAllProducts(limit, page, query = {}, sort) {
+//     return this.productRepository.getAllProducts(limit, page, query, sort);
+//   }
 
-  async getProductById(pid) {
-    return this.productRepository.getProductById(pid);
-  }
+//   async getProductById(pid) {
+//     return this.productRepository.getProductById(pid);
+//   }
 
-  async createProduct(product) {
-    return this.productRepository.createProduct(product);
-  }
+//   async createProduct(product) {
+//     return this.productRepository.createProduct(product);
+//   }
 
-  async updateProduct(pid, productUpdate) {
-    return this.productRepository.updateProduct(pid, productUpdate);
-  }
+//   async updateProduct(pid, productUpdate) {
+//     return this.productRepository.updateProduct(pid, productUpdate);
+//   }
 
-  async deleteProduct(pid) {
-    return this.productRepository.deleteProduct(pid);
-  }
-}
+//   async deleteProduct(pid) {
+//     return this.productRepository.deleteProduct(pid);
+//   }
 
-export default ProductManagerDB;
+//   async getProductsByOwner(filter) {
+//     return await this.productRepository(filter);
+//   }
+// }
+
+// export default ProductManagerDB;

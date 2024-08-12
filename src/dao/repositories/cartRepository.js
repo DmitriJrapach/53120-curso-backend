@@ -19,7 +19,9 @@ class CartRepository {
 
   async getCartById(cid) {
     try {
-        const cart = await cartModel.findById(cid).populate('products.product').lean();
+        const cart = await cartModel.findById(cid)
+            .populate('products.product') // Asegúrate de que 'products.product' es el campo correcto
+            .lean(); // Usa lean para obtener un objeto JS en lugar de un documento Mongoose
         if (!cart) {
             throw new Error('Carrito no encontrado');
         }
@@ -28,7 +30,7 @@ class CartRepository {
         console.error(error);
         throw new Error("Error al obtener el carrito");
     }
-  }
+}
 
   async createCart() {
     try {

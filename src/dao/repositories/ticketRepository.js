@@ -1,60 +1,61 @@
-// src/repository/ticketRepository.js
-import ticketDTO from "../dto/ticketDTO.js";
-import ticketService from "../services/ticketService.js";
-import userModel from "../models/userModel.js";
+// // src/repository/ticketRepository.js
+import ticketModel from '../models/ticketModel.js';
 
 class TicketRepository {
   async getAllTickets(limit, page, query, sort) {
     try {
-      return await ticketService.getAllTickets(limit, page, query, sort);
+      const tickets = await ticketModel.find(query)
+        .sort(sort)
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .populate('purchaser')
+        .lean();
+      return tickets;
     } catch (error) {
-      console.error(error.message);
-      throw new Error("Error fetching tickets from repository");
+      throw error;
     }
   }
 
-  async getTicketById(tid) {
+  async getTicketById(ticketId) {
     try {
-      const result = await ticketService.getTicketById(tid);
-      if (!result) throw new Error(`Ticket with ID ${tid} does not exist!`);
-      return result;
+      const ticket = await ticketModel.findById(ticketId)
+        .populate({
+          path: 'products.product', // Popula el campo 'product' dentro de 'products'
+          model: 'products', // Modelo al que hace referencia
+          select: 'title price' // Solo selecciona los campos 'title' y 'price'
+        })
+        .populate('purchaser', 'name') // Popula el campo 'purchaser' si es necesario
+        .lean();
+      return ticket;
     } catch (error) {
-      console.error(error.message);
-      throw new Error("Error fetching ticket from repository");
+      throw error;
     }
   }
 
-  async createTicket(ticketData) {
+  async createTicket(ticket) {
     try {
-      const { purchaseDateTime, amount, purchaser } = ticketData;
-
-      // Find the user by email
-      const user = await userModel.findOne({ email: purchaser });
-      if (!user) {
-        throw new Error("Purchaser not found");
-      }
-
-      const code = await this.generateTicketCode();
-      const newTicketDTO = new ticketDTO({
-        code,
-        purchaseDateTime,
-        amount,
-        purchaser: user._id,
-      });
-      return await ticketService.createTicket(newTicketDTO);
+      const newTicket = await ticketModel.create(ticket);
+      return newTicket;
     } catch (error) {
-      console.error(error.message);
-      throw new Error("Error creating ticket in repository");
+      throw error;
     }
   }
 
-  async generateTicketCode() {
+  async updateTicket(ticketId, updateData) {
     try {
-      const randomCode = Math.floor(Math.random() * 1000) + 1;
-      return randomCode;
+      const updatedTicket = await ticketModel.findByIdAndUpdate(ticketId, updateData, { new: true }).lean();
+      return updatedTicket;
     } catch (error) {
-      console.error(error.message);
-      throw new Error("Error generating random code");
+      throw error;
+    }
+  }
+
+  async deleteTicket(ticketId) {
+    try {
+      const deletedTicket = await ticketModel.findByIdAndDelete(ticketId).lean();
+      return deletedTicket;
+    } catch (error) {
+      throw error;
     }
   }
 }

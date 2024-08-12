@@ -80,23 +80,6 @@ const deleteAllProductsFromCart = async (cartId) => {
     throw error;
   }
 }
-
-const getCartView = async (req, res) => {
-  try {
-      const cart = await cartRepository.getCartById(req.params.cid);
-      res.render('cart', {
-          cart: cart,
-          user: req.session.user,
-          style: 'main.css'
-      });
-  } catch (error) {
-      res.status(400).send({
-          status: 'error',
-          message: error.message
-      });
-  }
-};
-
 const updateCart = async (cartId, products) => {
   try {
     return await cartRepository.updateCart(cartId, products);
@@ -136,6 +119,5 @@ export default {
   updateCart,
   updateProductQuantity,
   deleteCart,
-  getCartView,
   getStockfromProducts
 };

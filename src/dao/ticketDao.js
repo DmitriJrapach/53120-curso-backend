@@ -1,16 +1,10 @@
 // src/dao/ticketDao.js
-import ticketModel from './models/ticketModel.js';
+import ticketRepository from './repositories/ticketRepository.js';
 
 class TicketDAO {
   async getAllTickets(limit, page, query, sort) {
     try {
-      const tickets = await ticketModel.find(query)
-        .sort(sort)
-        .limit(limit)
-        .skip((page - 1) * limit)
-        .populate('purchaser')
-        .lean();
-      return tickets;
+      return await ticketRepository.getAllTickets(limit, page, query, sort);
     } catch (error) {
       throw error;
     }
@@ -18,8 +12,7 @@ class TicketDAO {
 
   async getTicketById(ticketId) {
     try {
-      const ticket = await ticketModel.findById(ticketId).populate('purchaser').lean();
-      return ticket;
+      return await ticketRepository.getTicketById(ticketId);
     } catch (error) {
       throw error;
     }
@@ -27,8 +20,7 @@ class TicketDAO {
 
   async createTicket(ticket) {
     try {
-      const newTicket = await ticketModel.create(ticket);
-      return newTicket;
+      return await ticketRepository.createTicket(ticket);
     } catch (error) {
       throw error;
     }
@@ -36,8 +28,7 @@ class TicketDAO {
 
   async updateTicket(ticketId, updateData) {
     try {
-      const updatedTicket = await ticketModel.findByIdAndUpdate(ticketId, updateData, { new: true }).lean();
-      return updatedTicket;
+      return await ticketRepository.updateTicket(ticketId, updateData);
     } catch (error) {
       throw error;
     }
@@ -45,8 +36,7 @@ class TicketDAO {
 
   async deleteTicket(ticketId) {
     try {
-      const deletedTicket = await ticketModel.findByIdAndDelete(ticketId).lean();
-      return deletedTicket;
+      return await ticketRepository.deleteTicket(ticketId);
     } catch (error) {
       throw error;
     }

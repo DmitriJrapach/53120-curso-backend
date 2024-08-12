@@ -1,5 +1,6 @@
 // src/services/productService.js
 import ProductRepository from '../dao/repositories/productRepository.js';
+import mongoose from 'mongoose';
 
 const productRepository = new ProductRepository();
 
@@ -47,11 +48,20 @@ const deleteProduct = async (pid) => {
     throw new Error(error.message);
   }
 };
+const getProductsByOwner = async (owner) => {
+  try {
+    return await productRepository.getProductsByOwner(owner);
+  } catch (error) {
+    console.error('Error in getProductsByOwner:', error);
+    throw new Error('Error al obtener productos del propietario');
+  }
+};
 
 export default {
   getAllProducts,
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getProductsByOwner
 };

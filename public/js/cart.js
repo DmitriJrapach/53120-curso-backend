@@ -38,3 +38,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+document.querySelectorAll('.remove-from-cart-form').forEach(form => {
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const productId = event.target.getAttribute('data-product-id');
+    const cartId = event.target.getAttribute('data-cart-id');
+
+    try {
+      const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        document.getElementById('message').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('message').style.display = 'none';
+        }, 2000);
+        window.location.reload(); // Recarga la página después de eliminar el producto
+      } else {
+        const error = await response.json();
+        alert('Error al eliminar el producto del carrito: ' + error.message);
+      }
+    } catch (error) {
+      console.error('Error al eliminar el producto del carrito:', error);
+      alert('Error al eliminar el producto del carrito: ' + error.message);
+    }
+  });
+});

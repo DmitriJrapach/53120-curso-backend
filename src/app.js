@@ -46,6 +46,11 @@ connectToMongoDB();
 const hbs = create({
     helpers: {
         eq: (a, b) => a === b
+    },
+    defaultLayout: 'main',
+    extname: '.handlebars',
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true
     }
 });
 

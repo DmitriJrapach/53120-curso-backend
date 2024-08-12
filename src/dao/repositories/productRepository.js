@@ -3,6 +3,7 @@
 import productModel from '../models/productModel.js';
 import { generateProductsErrorInfo } from '../../services/errors/info.js';
 import { updateorDeleteProductsErrorInfo } from '../../services/errors/info.js';
+import mongoose from 'mongoose';
 
 class ProductRepository {
   async getAllProducts(limit, page, query = {}, sort) {
@@ -69,6 +70,21 @@ class ProductRepository {
     } catch (error) {
       const errorMessage = updateorDeleteProductsErrorInfo(product);
       throw new Error(errorMessage);
+    }
+  }
+  async getProductsByOwner(owner) {
+    try {
+      // Verificar si owner es un ObjectId válido o una cadena de texto que puede ser convertida
+      if (!mongoose.Types.ObjectId.isValid(owner)) {
+        throw new Error('El ID del propietario no es válido');
+      }
+
+      // Busca los productos que tengan este owner
+      const products = await productModel.find({ owner }).exec();
+      return products;
+    } catch (error) {
+      console.error('Error in getProductsByOwner:', error);
+      throw new Error('Error al obtener productos del propietario');
     }
   }
 }

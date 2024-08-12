@@ -11,6 +11,8 @@ router.get("/products", viewController.isAuthenticated, viewController.getProduc
 
 router.get('/realtimeproducts', viewController.isAuthenticated, viewController.getRealTimeProducts);
 
+router.get("/premiumproducts", viewController.isAuthenticated, viewController.getPremiumProducts);
+
 router.get("/chat", viewController.isAuthenticated, viewController.chat);
 
 router.get("/login", viewController.login);

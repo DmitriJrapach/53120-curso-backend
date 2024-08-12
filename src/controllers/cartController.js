@@ -138,33 +138,6 @@ const deleteCart = async (req, res) => {
         });
     }
 };
-
-const getCartView = async (req, res) => {
-    try {
-        const cartId = req.session.user.cartId || req.session.user.cart;
-        console.log(cartId)
-        const cart = await cartService.getCartById(cartId);
-        if (!cart) {
-            return res.status(404).send({
-                status: 'error',
-                message: 'Carrito no encontrado'
-            });
-        }
-
-        res.render('cart', {
-            cart: cart,
-            user: req.user,
-            style: 'main.css'
-        });
-    } catch (error) {
-        req.logger.warning('Error al obtener la vista del carrito:', error);
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-};
-
 const purchaseCart = async (req, res) => {
     const cartId = req.params.cid;
     const userId = req.session.user._id;
@@ -246,6 +219,5 @@ export default {
     updateCart,
     updateProductQuantity,
     deleteCart,
-    getCartView,
     purchaseCart
 };

@@ -1,5 +1,7 @@
 // src/controllers/productController.js
 import productService from '../services/productService.js';
+import userService from '../services/userService.js';
+import sendMail from '../utils/sendMail.js';
 
 const getAllProducts = async (req, res) => {
     try {
@@ -99,13 +101,59 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        const result = await productService.deleteProduct(req.params.pid);
-        res.send({
-            status: 'success',
-            payload: result
-        });
+        const { pid } = req.params;
+        const { role } = req.session.user || {}; // Obtener el rol del usuario desde la sesión
+
+        // Obtener el producto y el propietario
+        const product = await productService.getProductById(pid);
+
+        if (!product) {
+            return res.status(404).send({
+                status: 'error',
+                message: 'Product not found'
+            });
+        }
+
+        // Obtener el propietario del producto
+        const owner = await userService.getUser(product.owner);
+
+        // Eliminar el producto
+        const result = await productService.deleteProduct(pid);
+
+        // Verificar si el producto fue eliminado
+        if (!result) {
+            return res.status(404).send({
+                status: 'error',
+                message: 'Product not found'
+            });
+        }
+
+        // Enviar correo al propietario si el usuario es admin
+        if (role === 'admin' && owner.email) {
+            const subject = 'Product Deleted';
+            const text = `Product with ID ${pid} has been deleted by an admin.`;
+
+            try {
+                await sendMail(owner.email, subject, text);
+                res.send({
+                    status: 'success',
+                    payload: result
+                });
+            } catch (mailError) {
+                req.logger.warning('Error sending email:', mailError);
+                res.status(500).send({
+                    status: 'error',
+                    message: 'Error sending email'
+                });
+            }
+        } else {
+            res.send({
+                status: 'success',
+                payload: result
+            });
+        }
     } catch (error) {
-        req.logger.warning ('Error en el controlador al eliminar el producto:', error);
+        req.logger.warning('Error in the controller when deleting the product:', error);
         res.status(400).send({
             status: 'error',
             message: error.message
