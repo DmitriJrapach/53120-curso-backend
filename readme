@@ -1,0 +1,73 @@
+Ecommerce Backend - Proyecto Final
+Este es el backend para un sistema de ecommerce, desarrollado con Node.js. El proyecto incluye funcionalidades para la gestión de usuarios, carritos de compras, productos, y tickets. Además, cuenta con documentación de API generada con Swagger.
+
+Funcionalidades
+Usuarios
+Registro y Login de Usuario: Permite a los usuarios registrarse y autenticar sus credenciales.
+Manejo de Roles: Soporta diferentes roles de usuario (por ejemplo, usuario estándar, premium, administrador) con permisos específicos.
+Eliminación de Usuarios Inactivos: Elimina usuarios que no han estado activos durante un período de tiempo.
+Recuperación de Contraseña: Envía correos electrónicos para la recuperación de contraseñas.
+Carritos
+Creación de Carritos: Permite a los usuarios crear carritos de compras.
+Agregar y Eliminar Productos: Los usuarios pueden añadir o eliminar productos de sus carritos.
+Finalización de la Compra: Crea un ticket y muestra los detalles del mismo al finalizar la compra.
+Productos
+Creación y Eliminación: Los usuarios pueden crear y eliminar productos según su rol (por ejemplo, solo usuarios premium y administradores pueden crear productos).
+Tickets
+Manejo de Stock: Controla el stock de productos asociado a los tickets.
+Manejo de Precio Total: Calcula el precio total de los productos en el ticket.
+Creación y Eliminación: Permite crear y eliminar tickets.
+Documentación de API
+La documentación completa de la API está disponible en Swagger. Puedes acceder a ella en la siguiente URL:
+
+Documentación API Swagger
+Tecnologías Utilizadas
+Node.js: Entorno de ejecución para JavaScript en el servidor.
+Express: Framework para construir la API.
+MongoDB: Base de datos NoSQL para almacenar datos.
+Mongoose: Librería para modelar los datos en MongoDB.
+Swagger: Herramienta para la documentación de la API.
+Instalación
+Clona el repositorio:
+
+bash
+Copiar código
+git clone https://github.com/tu-usuario/tu-repositorio.git
+Navega al directorio del proyecto:
+
+bash
+Copiar código
+cd tu-repositorio
+Instala las dependencias:
+
+bash
+Copiar código
+npm install
+Configura las variables de entorno necesarias. Puedes usar un archivo .env como referencia.
+
+Inicia el servidor:
+
+bash
+Copiar código
+npm start
+Abre tu navegador y ve a http://localhost:8080 para usar la aplicación.
+
+Contribuciones
+Las contribuciones son bienvenidas. Por favor, sigue estos pasos para contribuir:
+
+Fork el repositorio.
+Crea una rama para tu cambio:
+bash
+Copiar código
+git checkout -b feature/mi-cambio
+Realiza tus cambios y haz commit:
+bash
+Copiar código
+git commit -am 'Agrega nueva funcionalidad'
+Push a la rama:
+bash
+Copiar código
+git push origin feature/mi-cambio
+Crea un Pull Request.
+Licencia
+Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
