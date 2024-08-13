@@ -180,7 +180,7 @@ class UserManager {
             const now = new Date();
  
             // Calcular la fecha límite para usuarios inactivos (2 días antes de ahora)
-            const twoDaysAgo = new Date(now.getTime() - 10 * 60 * 1000); // 2 días en milisegundos
+            const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 días en milisegundos
             console.log('Fecha límite para inactivos:', twoDaysAgo);
 
             // Buscar usuarios inactivos

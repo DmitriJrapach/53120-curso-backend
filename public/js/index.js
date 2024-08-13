@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Verificar si data es un array antes de intentar iterar sobre él
         if (Array.isArray(data)) {
-            data.forEach(chat => {
+            data.forEach((chat) => {
                 messages += `${chat.user}: ${chat.message} </br>`;
             });
         } else {

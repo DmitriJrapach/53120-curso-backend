@@ -29,7 +29,6 @@ const getCartById = async (cid) => {
 const createCart = async () => {
   try {
       const newCart = await cartRepository.createCart();
-      console.log('Carrito creado en cartService.createCart:', newCart);
       return newCart;
   } catch (error) {
       console.error('Error en cartService.createCart:', error.message);
@@ -48,7 +47,6 @@ const addProductByID = async (cartId, productId) => {
 
 const removeProductByID = async (cartId, productObjectId) => {
   try {
-    console.log(`Removing product ID: ${productObjectId} from cart ID: ${cartId}`);
     const result = await cartRepository.removeProductByID(cartId, productObjectId);
     return result;
   } catch (error) {

@@ -2,7 +2,6 @@
 import productModel from '../dao/models/productModel.js';
 
 const isUserOrPremiumOwner = async (req, res, next) => {
-  console.log('User session in isUserOrPremium:', req.session.user);
 
   // Verificar si el usuario está autenticado
   if (!req.session.user) {

@@ -67,7 +67,6 @@ const getPremiumProducts = async (req, res) => {
         const userId = req.session.user._id;
 
         // Verifica si userId está presente y es un ObjectId válido
-        console.log('ID del usuario en sesión:', userId);
         if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
             console.error('ID del usuario no es válido:', userId);
             return res.status(400).send('ID de usuario no válido');
@@ -125,7 +124,6 @@ const register = (req, res) => {
 const getCartView = async (req, res) => {
     try {
         const cartId = req.session.user.cartId || req.session.user.cart;
-        console.log(cartId)
         const cart = await cartService.getCartById(cartId);
         if (!cart) {
             return res.status(404).send({
@@ -188,8 +186,6 @@ const adminDashboard = (req, res) => {
 };
 const userDashboard = (req, res) => {
     const user = req.session.user;
-    console.log('User data being passed to view:', user); // Verificación de los datos de usuario
-
     res.render('userDashboard', {
         title: 'User Dashboard',
         style: 'index.css',
@@ -198,8 +194,6 @@ const userDashboard = (req, res) => {
 };
 const premiumDashboard = (req, res) => {
     const user = req.session.user;
-    console.log('User data being passed to view:', user); // Verificación de los datos de usuario
-
     res.render('premiumUserDashboard', {
         title: 'Premium User Dashboard',
         style: 'index.css',
@@ -223,6 +217,16 @@ const getTicketView = async (req, res) => {
     }
 };
 
+const getAllTickets = async (req, res) => {
+    try {
+        const tickets = await ticketService.getAllTickets();
+        res.render('allTickets', { tickets, user: req.user, style: 'index.css' });
+    } catch (error) {
+        req.logger.warning('Error al obtener los tickets:', error);
+        res.status(400).send({ status: 'error', message: error.message });
+    }
+};
+
 export default {
     isAuthenticated,
     getProducts,
@@ -240,5 +244,6 @@ export default {
     adminDashboard,
     userDashboard,
     premiumDashboard,
-    getTicketView
+    getTicketView,
+    getAllTickets
 };

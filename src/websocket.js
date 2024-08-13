@@ -30,6 +30,11 @@ export default (io) => {
         
                 // Emitir los mensajes actualizados a todos los clientes
                 io.emit("messages", messages);
+
+        res.status(201).json({
+            status: 'success',
+            payload: createdMessage
+        });
             } catch (error) {
                 console.error("Error al procesar el mensaje:", error);
                 // Emitir un mensaje de error al cliente

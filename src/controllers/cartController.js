@@ -3,23 +3,6 @@ import productService from "../services/productService.js";
 import ticketService from "../services/ticketService.js";
 import userService from '../services/userService.js';
 
-
-const getAllCarts = async (req, res) => {
-    try {
-        const result = await cartService.getAllCarts();
-        res.send({
-            status: 'success',
-            payload: result
-        });
-    } catch (error) {
-        req.logger.warning ('Error en el controlador al obtener todos los carritos:', error);
-        res.status(400).send({
-            status: 'error',
-            message: error.message
-        });
-    }
-};
-
 const getCartById = async (req, res) => {
     try {
         const result = await cartService.getCartById(req.params.cid);
@@ -211,7 +194,7 @@ const purchaseCart = async (req, res) => {
   
 
 export default {
-    getAllCarts,
+    // getAllCarts,
     getCartById,
     createCart,
     addProductByID,

@@ -6,8 +6,6 @@ import isUserOrPremiumOwner from '../middleware/userOrPremiumOwnerMiddleware.js'
 
 const router = Router();
 
-router.get('/', cartController.getAllCarts);
-
 router.get('/:cid', passportCall('jwt'), cartController.getCartById);
 
 router.post('/', cartController.createCart);

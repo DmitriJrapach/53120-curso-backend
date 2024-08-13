@@ -1,8 +1,6 @@
 // src/repositories/cartRepository.js
 import cartModel from "../models/cartModel.js";
 import productModel from "../models/productModel.js";
-import cartsDTO from "../../dto/cartDTO.js";
-
 
 class CartRepository {
   constructor(dao) {
@@ -35,7 +33,6 @@ class CartRepository {
   async createCart() {
     try {
         const newCart = await cartModel.create({});
-        console.log('Carrito creado en CartRepository.createCart:', newCart);
         return newCart;
     } catch (error) {
         console.error('Error en CartRepository.createCart:', error.message);
@@ -92,22 +89,13 @@ class CartRepository {
 
   async addProductByID(cid, pid) {
     try {
-      console.log(`Cart ID: ${cid}`); // Log the Cart ID
-      console.log(`Product ID: ${pid}`); // Log the Product ID
       // Verifica si el producto existe
       const product = await productModel.findById(pid);
       if (!product) {
         throw new Error(`El producto ${pid} no existe`);
       }
-      // Log the product
-      console.log(`Product: ${JSON.stringify(product)}`);
-
       // Busca el carrito por su ID
       const cart = await cartModel.findOne({ _id: cid });
-
-      // Log the cart
-      console.log(`Cart: ${JSON.stringify(cart)}`);
-
       // Si se encuentra el carrito, actualiza los productos
       if (cart) {
         let exist = false;

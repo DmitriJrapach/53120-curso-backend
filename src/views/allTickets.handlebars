@@ -1,0 +1,37 @@
+<!-- views/tickets.handlebars -->
+<div class="box">
+  <h2>Lista de Tickets</h2>
+  <div class="tickets-box">
+    {{#each tickets}}
+      <div class="ticket-card">
+        <h3>Ticket ID: {{_id}}</h3>
+        <hr>
+        <p>Fecha de Compra: {{purchaseDateTime}}</p>
+        <p>Importe Total: $ {{amount}}</p>
+        <p>Comprador: {{purchaser.first_name}} {{purchaser.last_name}}</p>
+        <div class="products">
+          <h4>Productos:</h4>
+          {{#each products}}
+            <div class="product-card">
+              <p>Producto ID: {{this.product._id}}</p>
+              <p>Título: {{this.product.title}}</p>
+              <p>Precio: $ {{this.product.price}}</p>
+              <p>Cantidad: {{this.quantity}}</p>
+            </div>
+          {{/each}}
+        </div>
+        <br>
+      </div>
+      <br>
+    {{/each}}
+    <div class="box">
+      <a href="/" class="button">
+        Volver a la Página Principal
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="message" style="display:none;">¡Ticket cargado!</div>
+
+<script src="/js/tickets.js"></script>

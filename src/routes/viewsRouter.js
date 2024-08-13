@@ -50,4 +50,6 @@ router.get('/premium/dashboard', isPremium, viewController.premiumDashboard);
 
 router.get('/tickets/:tid', viewController.isAuthenticated, viewController.getTicketView);
 
+router.get('/tickets', isAdmin, viewController.getAllTickets);
+
 export default router;

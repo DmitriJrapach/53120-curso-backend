@@ -2,7 +2,6 @@
 import productModel from '../dao/models/productModel.js';
 
 const isAdminOrPremiumOrOwner = async (req, res, next) => {
-  console.log('User session in isAdminOrPremiumOrOwner:', req.session.user);
   
   if (!req.session.user) {
     return res.status(401).send({ status: 'error', message: 'Unauthorized' });

@@ -1,28 +1,35 @@
-<div class="container">
-    <h1>Lista de Todos los Carritos</h1>
+<!-- views/allCarts.handlebars -->
+<div class="box">
+  <h2>Todos los Carritos</h2>
+  <div class="products-box">
     {{#each carts}}
-      <div class="box">
-        <h2>Carrito de {{this.user.first_name}}</h2>
-        <div class="products-box">
-          {{#each carts.products}}
+      <div class="cart-card">
+        <h3>Carrito ID: {{_id}}</h3>
+        <hr>
+        {{#if products.length}}
+          {{#each products}}
             <div class="product-card">
-              <h3>{{this.product.title}}</h3>
-              <hr>
+              <h3>Producto ID: {{this.product._id}}</h3>
+              <p>Título: {{this.product.title}}</p>
               <p>Precio: $ {{this.product.price}}</p>
               <p>Cantidad: {{this.quantity}}</p>
-              <form class="remove-from-cart-form" data-product-id="{{this.product._id}}" data-cart-id="{{../_id}}">
-                <button type="submit" class="button">Eliminar del carrito</button>
-              </form>        
             </div>
             <br>
           {{/each}}
-          <div class="box">
-            <a href="/products" class="button">
-              Volver   
-            </a>
-          </div>
-        </div>
+        {{else}}
+          <p>Este carrito está vacío.</p>
+        {{/if}}
       </div>
-      <hr>
+      <br>
     {{/each}}
+    <div class="box">
+      <a href="/products" class="button">
+        Volver a Productos
+      </a>
+    </div>
   </div>
+</div>
+
+<div id="message" style="display:none;">Carrito actualizado!</div>
+
+<script src="/js/allCarts.js"></script>

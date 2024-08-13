@@ -23,6 +23,7 @@ import { addLogger, startLogger } from './utils/loggerUtil.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
 import './utils/handlebarsHelpers.js';
+import db from './utils/database.js';  // Importa la instancia Singleton de la base de datos
 
 dotenv.config();
 
