@@ -113,7 +113,7 @@ app.use('/api/chat', messageRouter);
 app.use('/api/tickets', ticketRouter);
 app.use('/', viewsRouter);
 
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const httpServer = app.listen(PORT, () => {
     console.log(`Start server http://localhost:${PORT}`);
 });
