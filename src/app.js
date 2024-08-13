@@ -115,7 +115,7 @@ app.use('/', viewsRouter);
 
 const PORT = process.env.PORT || 8080;
 const httpServer = app.listen(PORT, () => {
-    console.log(`Start server http://localhost:${PORT}`);
+    console.log(`Start server on port: ${PORT}`);
 });
 
 const io = new Server(httpServer);
